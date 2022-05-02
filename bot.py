@@ -16,9 +16,13 @@ from flask import Flask, request, jsonify
 from webexteamssdk import WebexTeamsAPI
 import os
 
+securex_url = 'https://securex-ao.eu.security.cisco.com'
+
 # get environment variables
 WT_BOT_TOKEN = os.environ['WT_BOT_TOKEN']
 WT_BOT_EMAIL = os.environ['WT_BOT_EMAIL']
+SECUREX_TOKEN = os.environ['SECUREX_TOKEN']
+SECUREX_WEBHOOK_ID = os.environ['SECUREX_WEBHOOK_ID']
 
 # start Flask and WT connection
 app = Flask(__name__)
@@ -36,6 +40,7 @@ def alert_received():
     WT_ROOM_ID = raw_json['data']['roomId']
     personEmail_json = raw_json['data']['personEmail']
     if personEmail_json != WT_BOT_EMAIL:
+        requests.get(securex_url + '/webhooks/' + SECUREX_WEBHOOK_ID + '?api_key=' + SECUREX_TOKEN)
         api.messages.create(roomId=WT_ROOM_ID, markdown=message)
     
     return jsonify({'success': True})
