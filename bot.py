@@ -13,6 +13,7 @@ or implied.
 """
 
 from flask import Flask, request, jsonify
+import requests
 from webexteamssdk import WebexTeamsAPI
 import os
 
