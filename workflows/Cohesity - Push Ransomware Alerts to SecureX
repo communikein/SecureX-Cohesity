@@ -1,0 +1,916 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_01WNHW87PP5ZK7S7PHik8I1zKxEXMzZElkP",
+    "name": "Cohesity - Push Ransomware Alerts to SecureX",
+    "title": "Cohesity - Push Ransomware Alerts to SecureX",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "local",
+          "name": "Sighting",
+          "type": "datatype.string",
+          "is_required": false,
+          "is_invisible": false
+        },
+        "unique_name": "variable_workflow_01WQLCYM6AOZ57ZnianurWKDaFS3R73BGT3",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "Webex Room ID",
+          "type": "datatype.string",
+          "is_required": true,
+          "is_invisible": false
+        },
+        "unique_name": "variable_workflow_01WNW3TRU3JGL2t3TTK4cW1gVzYS89HSOdu",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "Webex Bot Token",
+          "type": "datatype.string",
+          "is_required": true,
+          "is_invisible": false
+        },
+        "unique_name": "variable_workflow_01WNW6E5N501W07MUQTKGqylmMnFSqkj5Jo",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "200",
+          "scope": "input",
+          "name": "Number of Hours",
+          "type": "datatype.string",
+          "description": "Specifies how many hours ago alerts will be fetched from. For example, if you set this to 1,000, all alerts from the past 1,000 hours will be fetched",
+          "is_required": true,
+          "is_invisible": false
+        },
+        "unique_name": "variable_workflow_01WNHW87XBN0J2R9xyz23OW70ABHxGZQIuQ",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "local",
+          "name": "Incident",
+          "type": "datatype.string",
+          "is_required": false,
+          "is_invisible": false
+        },
+        "unique_name": "variable_workflow_01WQLD21VDCYT3MaDtuXZsaTWiQZ39kXvVC",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "is_atomic": false
+      },
+      "delete_workflow_instance": false,
+      "description": "Note: This workflow was developed and is supported by Cohesity\n\nThis workflow pushes Cohesity Helios ransomware alerts to SecureX Threat Response incidents with matching sightings.\n\nTargets: None\n\nSteps:\n[] Execute a Python script to fetch alerts from Cohesity and create corresponding incidents in SecureX\n\nMore information: https://ciscosecurity.github.io/sxo-05-security-workflows/workflows/0043",
+      "display_name": "Cohesity - Push Ransomware Alerts to SecureX",
+      "runtime_user": {
+        "target_default": true
+      },
+      "target": {
+        "no_target": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_01WRKRYHYKF6B0SqLgmtcPicGVNZNYYnlea",
+        "name": "Cohesity - Get Ransomware Alerts",
+        "title": "Cohesity - Get Ransomware Alerts",
+        "type": "workflow.atomic_workflow",
+        "base_type": "subworkflow",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Cohesity - Get Ransomware Alerts",
+          "input": {
+            "variable_workflow_01WRK42D0D8C904M3EztdyrP599dlkv3SmQ": "200",
+            "variable_workflow_01WRK4Z2DCHZQ5pnxdnezWm0SkfRpEsKW4a": "$global.variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46.global.variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46$",
+            "variable_workflow_01WRKB32NIOJF6jcHFiAa5xqVpDHxKXZ1Tt": "1000"
+          },
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "execute_on_this_target": true,
+            "target_id": "definition_target_01WPO62LSE4OH3RvfB3Tdgxj59o2lLVM3Ry",
+            "target_type": "web-service.endpoint"
+          },
+          "workflow_id": "definition_workflow_01WRK42CVKIFK1NLl1wnGJQp57UEqazGdlw",
+          "workflow_name": "Cohesity - Get Ransomware Alerts"
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01WPONSHCOV9R2gdmUkr3SKrrBWuBKk0eLC",
+        "name": "Read Table from JSON",
+        "title": "Export Alerts to Array",
+        "type": "corejava.read_table_from_json",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": false,
+          "display_name": "Export Alerts to Array",
+          "input_json": "$activity.definition_activity_01WRKRYHYKF6B0SqLgmtcPicGVNZNYYnlea.output.variable_workflow_01WRKQSAZ0BMC4ZPQ9HbqVWnSxocEoO2rod$",
+          "jsonpath_query": "$.",
+          "persist_output": false,
+          "populate_columns": false,
+          "skip_execution": false,
+          "table_columns": [
+            {
+              "column_name": "id",
+              "column_type": "string"
+            },
+            {
+              "column_name": "alertCode",
+              "column_type": "string"
+            },
+            {
+              "column_name": "firstTimestampUsecs",
+              "column_type": "integer"
+            },
+            {
+              "column_name": "latestTimestampUsecs",
+              "column_type": "integer"
+            },
+            {
+              "column_name": "alertCategory",
+              "column_type": "string"
+            },
+            {
+              "column_name": "alertType",
+              "column_type": "integer"
+            },
+            {
+              "column_name": "severity",
+              "column_type": "string"
+            },
+            {
+              "column_name": "alertState",
+              "column_type": "string"
+            },
+            {
+              "column_name": "propertyList",
+              "column_type": "string"
+            },
+            {
+              "column_name": "dedupTimestamps",
+              "column_type": "string"
+            },
+            {
+              "column_name": "dedupCount",
+              "column_type": "integer"
+            },
+            {
+              "column_name": "alertDocument",
+              "column_type": "string"
+            },
+            {
+              "column_name": "clusterName",
+              "column_type": "string"
+            },
+            {
+              "column_name": "clusterId",
+              "column_type": "integer"
+            },
+            {
+              "column_name": "eventSource",
+              "column_type": "string"
+            },
+            {
+              "column_name": "alertTypeBucket",
+              "column_type": "string"
+            }
+          ]
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01WO7NZQWA2LV1Y0GV4RQiWE3MY74UtG4nC",
+        "name": "Threat Response - Generate Access Token",
+        "title": "Threat Response - Generate Access Token",
+        "type": "workflow.atomic_workflow",
+        "base_type": "subworkflow",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Threat Response - Generate Access Token",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "override_workflow_target": true,
+            "target_id": "definition_target_01N8PCQX9ZC5U6NExUT76vZb8UCtLBXBJx3",
+            "target_type": "web-service.endpoint"
+          },
+          "workflow_id": "definition_workflow_01PP75S3LTBW4420OZU3rdHWKHFnE6aC7yH",
+          "workflow_name": "Threat Response - Generate Access Token"
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01WPMRCNE6DC812BnjSla9lDAsRFQRZqARm",
+        "name": "For Each",
+        "title": "For Each Ransomware Alert",
+        "type": "logic.for_each",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "For Each Ransomware Alert",
+          "skip_execution": false,
+          "source_array": "$activity.definition_activity_01WPONSHCOV9R2gdmUkr3SKrrBWuBKk0eLC.output.read_table_from_json$"
+        },
+        "object_type": "definition_activity",
+        "actions": [
+          {
+            "unique_name": "definition_activity_01WO8ELORZC0K3PIwzUHrU7RIKHyheQF8Ul",
+            "name": "Execute Python Script",
+            "title": "Extract External ID",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "continue_on_failure": false,
+              "display_name": "Extract External ID",
+              "script": "import json\nimport argparse\nimport ast\n\n# Get arguments\nparser = argparse.ArgumentParser()\nparser.add_argument(\"property_list\", help=\"Ransomware alert property list\")\nargs = parser.parse_args()\n\n# Get property dict\nproperty_dict = {}\nexternal_id = ''\n\nproperty_list = ast.literal_eval(args.property_list)\n\nfor property in property_list:\n    property_dict[property['key']] = property['value']\n\nexternal_id = property_dict.get('object', '') + '___' +\\\n                property_dict.get('entityId', '') + '___' +\\\n                property_dict.get('source', '') + '___' +\\\n                property_dict.get('cluster', '') + '___' +\\\n                property_dict.get('cid', '')",
+              "script_arguments": [
+                "$activity.definition_activity_01WPMRCNE6DC812BnjSla9lDAsRFQRZqARm.input.source_array[@].propertyList$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "external_id",
+                  "script_query_name": "External ID",
+                  "script_query_type": "string"
+                }
+              ],
+              "skip_execution": false
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01WQJRC6T6YMV43GNI1RExqV25A50uGMS8x",
+            "name": "Threat Response - Get Sightings From External ID",
+            "title": "Threat Response - Get Sightings From External ID",
+            "type": "workflow.atomic_workflow",
+            "base_type": "subworkflow",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "Threat Response - Get Sightings From External ID",
+              "input": {
+                "variable_workflow_01WO827X4LZEU6JB7HW3bhEkhYEStwGiSfw": "$activity.definition_activity_01WO8ELORZC0K3PIwzUHrU7RIKHyheQF8Ul.output.script_queries.External ID$",
+                "variable_workflow_01WQJQNRCFQDT0HaMv56HHg77ZZWjOUZRtt": "$activity.definition_activity_01WO7NZQWA2LV1Y0GV4RQiWE3MY74UtG4nC.output.variable_workflow_01PP75S3G7CJY6WAQr2IJC7qga2SIoE09gQ$"
+              },
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "target": {
+                "execute_on_this_target": true,
+                "target_id": "definition_target_01WPLYALTQWRG63RQvJrjcZYmE1hGiUyO7y",
+                "target_type": "web-service.endpoint"
+              },
+              "workflow_id": "definition_workflow_01WO7W8QW8N904O78E18X3z7v9F0rz6F8mI",
+              "workflow_name": "Threat Response - Get Sightings From External ID"
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01WQJPR50XBUT1ntFnq9YnzRvAZCrrZ3Dxo",
+            "name": "Threat Response - Get Incidents From External ID",
+            "title": "Threat Response - Get Incidents From External ID",
+            "type": "workflow.atomic_workflow",
+            "base_type": "subworkflow",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "Threat Response - Get Incidents From External ID",
+              "input": {
+                "variable_workflow_01WQJMJLIXC5L46OjDEGobzGk1jCiVcVrg6": "$activity.definition_activity_01WO8ELORZC0K3PIwzUHrU7RIKHyheQF8Ul.output.script_queries.External ID$",
+                "variable_workflow_01WQJNJ9Q4LGP20C5LRx2hSmhBas5kONyDk": "$activity.definition_activity_01WO7NZQWA2LV1Y0GV4RQiWE3MY74UtG4nC.output.variable_workflow_01PP75S3G7CJY6WAQr2IJC7qga2SIoE09gQ$"
+              },
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "target": {
+                "execute_on_this_target": true,
+                "target_id": "definition_target_01WPLYALTQWRG63RQvJrjcZYmE1hGiUyO7y",
+                "target_type": "web-service.endpoint"
+              },
+              "workflow_id": "definition_workflow_01WQJMJLAZ7UM6ltyJR5IlWtxWSMBPhtffW",
+              "workflow_name": "Threat Response - Get Incidents From External ID"
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01WPOZWSXBM7J0Ki9N8qTXO6TBdFaXbqMqo",
+            "name": "Condition Block",
+            "title": "If there are sightings",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "If there are sightings",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_01WPOZWT6RBAI0FxbTqHrKd7syJtI4aPaGj",
+                "name": "Condition Branch",
+                "title": "Sightings not found",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_01WQJRC6T6YMV43GNI1RExqV25A50uGMS8x.output.variable_workflow_01WP6CDRC9SAA4Bzz1FYd50hEZUjJFDLpqc$",
+                    "operator": "eq",
+                    "right_operand": "[]"
+                  },
+                  "continue_on_failure": false,
+                  "display_name": "Sightings not found",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_01WPTI5GF8AL66sMBbbjqdHZVYl22lfRmvD",
+                    "name": "Threat Response - Create Sighting from Helios Alert",
+                    "title": "Threat Response - Create Sighting from Helios Alert",
+                    "type": "workflow.atomic_workflow",
+                    "base_type": "subworkflow",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "display_name": "Threat Response - Create Sighting from Helios Alert",
+                      "input": {
+                        "variable_workflow_01WPT6A7T0G9407YXQtcVEKpHxpHgaIMu4X": "$activity.definition_activity_01WPMRCNE6DC812BnjSla9lDAsRFQRZqARm.input.source_array[@].firstTimestampUsecs$",
+                        "variable_workflow_01WPT6EDSWUUF5JWrcUoYTbuXIuL8Y4yFsi": "$activity.definition_activity_01WPMRCNE6DC812BnjSla9lDAsRFQRZqARm.input.source_array[@].latestTimestampUsecs$",
+                        "variable_workflow_01WPT6POLKDLM08p4zBbacWwk759jxxfQYl": "$activity.definition_activity_01WO8ELORZC0K3PIwzUHrU7RIKHyheQF8Ul.output.script_queries.External ID$",
+                        "variable_workflow_01WPTKU365Q221HuAEkzdkGxeni9q9lttUn": "$activity.definition_activity_01WO7NZQWA2LV1Y0GV4RQiWE3MY74UtG4nC.output.variable_workflow_01PP75S3G7CJY6WAQr2IJC7qga2SIoE09gQ$",
+                        "variable_workflow_01WQKTPXVCCT82alW26GXd5x8JJavjbIzip": "$activity.definition_activity_01WPMRCNE6DC812BnjSla9lDAsRFQRZqARm.input.source_array[@].propertyList$"
+                      },
+                      "runtime_user": {
+                        "target_default": true
+                      },
+                      "skip_execution": false,
+                      "target": {
+                        "no_target": true
+                      },
+                      "workflow_id": "definition_workflow_01WPSZ60JOEEX2UGsvnysh9AERfxEkHgL0r",
+                      "workflow_name": "Threat Response - Create Sighting from Helios Alert"
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_01WQLCQL01IIB7JXVA0c8MntaHWVKvLQvsg",
+                    "name": "Set Variables",
+                    "title": "Update Sighting",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "display_name": "Update Sighting",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_01WNHW87PP5ZK7S7PHik8I1zKxEXMzZElkP.local.variable_workflow_01WQLCYM6AOZ57ZnianurWKDaFS3R73BGT3$",
+                          "variable_value_new": "$activity.definition_activity_01WPTI5GF8AL66sMBbbjqdHZVYl22lfRmvD.output.variable_workflow_01WPTE772697J0gvZUzC5OhF0MDwCsCPXNr$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_01WPOZWTEAT0N0ioac7DhhvOqreFeI3JTcZ",
+                "name": "Condition Branch",
+                "title": "sightings found",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_01WQJRC6T6YMV43GNI1RExqV25A50uGMS8x.output.variable_workflow_01WP6CDRC9SAA4Bzz1FYd50hEZUjJFDLpqc$",
+                    "operator": "ne",
+                    "right_operand": ""
+                  },
+                  "continue_on_failure": false,
+                  "display_name": "sightings found",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_01WQKZ9WI5JP034jQ7FcmJ4wo33CUMLT98p",
+                    "name": "Threat Response - Update Sighting Time",
+                    "title": "Threat Response - Update Sighting Time",
+                    "type": "workflow.atomic_workflow",
+                    "base_type": "subworkflow",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "display_name": "Threat Response - Update Sighting Time",
+                      "input": {
+                        "variable_workflow_01WPPGYHLSAYO6UowYc3Nn69Cu0aSNtaVMr": "$activity.definition_activity_01WQJRC6T6YMV43GNI1RExqV25A50uGMS8x.output.variable_workflow_01WP6CDRC9SAA4Bzz1FYd50hEZUjJFDLpqc$",
+                        "variable_workflow_01WPPHIOX1WML00souotMnYWLTXnrvhk8Jm": "$activity.definition_activity_01WPMRCNE6DC812BnjSla9lDAsRFQRZqARm.input.source_array[@].latestTimestampUsecs$",
+                        "variable_workflow_01WPPIE7QNX8W5T1fMV9vqJUcIFYlVXul9T": "$activity.definition_activity_01WPMRCNE6DC812BnjSla9lDAsRFQRZqARm.input.source_array[@].firstTimestampUsecs$",
+                        "variable_workflow_01WQKYN1GCRFC02EfO4hSE5kTrALtieRccp": "$activity.definition_activity_01WO7NZQWA2LV1Y0GV4RQiWE3MY74UtG4nC.output.variable_workflow_01PP75S3G7CJY6WAQr2IJC7qga2SIoE09gQ$"
+                      },
+                      "runtime_user": {
+                        "target_default": true
+                      },
+                      "skip_execution": false,
+                      "target": {
+                        "no_target": true
+                      },
+                      "workflow_id": "definition_workflow_01WPPFQQ48YFD579SBivrxbkW3maKxEqAO6",
+                      "workflow_name": "Threat Response - Update Sighting Time"
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_01WQLCSD4CTRF5IYwWE5hLPx0qA3cOEcZ0p",
+                    "name": "Set Variables",
+                    "title": "Update Sighting",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "display_name": "Update Sighting",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_01WNHW87PP5ZK7S7PHik8I1zKxEXMzZElkP.local.variable_workflow_01WQLCYM6AOZ57ZnianurWKDaFS3R73BGT3$",
+                          "variable_value_new": "$activity.definition_activity_01WQKZ9WI5JP034jQ7FcmJ4wo33CUMLT98p.output.variable_workflow_01WQLEU471ZUK659gwQBeuSuvCsPLoKdSHf$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_01WRI4MCJPRIO2X2CliC92o5nBA70Qj36HG",
+            "name": "JSONPath Query",
+            "title": "Extract Sighting ID",
+            "type": "corejava.jsonpathquery",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "continue_on_failure": false,
+              "display_name": "Extract Sighting ID",
+              "input_json": "$workflow.definition_workflow_01WNHW87PP5ZK7S7PHik8I1zKxEXMzZElkP.local.variable_workflow_01WQLCYM6AOZ57ZnianurWKDaFS3R73BGT3$",
+              "jsonpath_queries": [
+                {
+                  "jsonpath_query": "$.id",
+                  "jsonpath_query_name": "Sighting ID",
+                  "jsonpath_query_type": "string"
+                }
+              ],
+              "skip_execution": false
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01WQJVPZW5CUC6SbYxhfTWjK269qoxbjcWK",
+            "name": "Condition Block",
+            "title": "If there are incidents",
+            "type": "logic.if_else",
+            "base_type": "activity",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "If there are incidents",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "blocks": [
+              {
+                "unique_name": "definition_activity_01WQJVPZW5W0T3VsPybkZY5xx7dPfjHpTtZ",
+                "name": "Condition Branch",
+                "title": "Incidents not found",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_01WQJPR50XBUT1ntFnq9YnzRvAZCrrZ3Dxo.output.variable_workflow_01WQJMJLIWXZB6xeCqPqOaXuLiab8yhtJN7$",
+                    "operator": "eq",
+                    "right_operand": "[]"
+                  },
+                  "continue_on_failure": false,
+                  "display_name": "Incidents not found",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_01WRJH0FLPP260ZBVYV1IpKoAHOY9UNVfBF",
+                    "name": "Threat Response - Create Incident from Helios Alert",
+                    "title": "Threat Response - Create Incident from Helios Alert",
+                    "type": "workflow.atomic_workflow",
+                    "base_type": "subworkflow",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "display_name": "Threat Response - Create Incident from Helios Alert",
+                      "input": {
+                        "variable_workflow_01WQK01M7ZAWE6qICOqOuuqhItUdbhx1skn": "$activity.definition_activity_01WO7NZQWA2LV1Y0GV4RQiWE3MY74UtG4nC.output.variable_workflow_01PP75S3G7CJY6WAQr2IJC7qga2SIoE09gQ$",
+                        "variable_workflow_01WQK3ISV5VJU1y46ZPf4a7Mj0RfTSQ8MA6": "$activity.definition_activity_01WPMRCNE6DC812BnjSla9lDAsRFQRZqARm.input.source_array[@].firstTimestampUsecs$",
+                        "variable_workflow_01WQKAZGWIEXF5jDmXmQ4ickB64yOF4LxgR": "$activity.definition_activity_01WPMRCNE6DC812BnjSla9lDAsRFQRZqARm.input.source_array[@].alertDocument$",
+                        "variable_workflow_01WQKKMFCUVEV2kJxit3q4ZR9Qrenz1pUZC": "$activity.definition_activity_01WPMRCNE6DC812BnjSla9lDAsRFQRZqARm.input.source_array[@].propertyList$",
+                        "variable_workflow_01WQKX4I9ED0I1l5dAROJxLojBmG2F6Sy8i": "$activity.definition_activity_01WO8ELORZC0K3PIwzUHrU7RIKHyheQF8Ul.output.script_queries.External ID$"
+                      },
+                      "runtime_user": {
+                        "target_default": true
+                      },
+                      "skip_execution": false,
+                      "target": {
+                        "no_target": true
+                      },
+                      "workflow_id": "definition_workflow_01WQK01M0ZM7E5iCwWRnvoDaOyx7RDA0j7t",
+                      "workflow_name": "Threat Response - Create Incident from Helios Alert"
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_01WQLH8KL74VV39qQwh45ollajELj1K9C0z",
+                    "name": "Set Variables",
+                    "title": "Update Incident",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "display_name": "Update Incident",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_01WNHW87PP5ZK7S7PHik8I1zKxEXMzZElkP.local.variable_workflow_01WQLD21VDCYT3MaDtuXZsaTWiQZ39kXvVC$",
+                          "variable_value_new": "$activity.definition_activity_01WRJH0FLPP260ZBVYV1IpKoAHOY9UNVfBF.output.variable_workflow_01WQKHAS3T9HE3s4yoXsj9E5OWGGZcWTcMq$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_01WQJVPZWD2783rkTYpu2xeUaXLMYo6c7yS",
+                "name": "Condition Branch",
+                "title": "Incidents found",
+                "type": "logic.condition_block",
+                "base_type": "activity",
+                "properties": {
+                  "condition": {
+                    "left_operand": "$activity.definition_activity_01WQJPR50XBUT1ntFnq9YnzRvAZCrrZ3Dxo.output.variable_workflow_01WQJMJLIWXZB6xeCqPqOaXuLiab8yhtJN7$",
+                    "operator": "ne",
+                    "right_operand": ""
+                  },
+                  "continue_on_failure": false,
+                  "display_name": "Incidents found",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity",
+                "actions": [
+                  {
+                    "unique_name": "definition_activity_01WQL6F57YUPN0I31s63TynmaJwpNk3Dux2",
+                    "name": "Threat Response - Update Incident Time",
+                    "title": "Threat Response - Update Incident Time",
+                    "type": "workflow.atomic_workflow",
+                    "base_type": "subworkflow",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "display_name": "Threat Response - Update Incident Time",
+                      "input": {
+                        "variable_workflow_01WQL1058ML6P494ZuFspr6M7CvMvn249Fx": "$activity.definition_activity_01WPMRCNE6DC812BnjSla9lDAsRFQRZqARm.input.source_array[@].firstTimestampUsecs$",
+                        "variable_workflow_01WQL1058MWJD6cFLrkcVV2k3f3rtoHhFq7": "$activity.definition_activity_01WO7NZQWA2LV1Y0GV4RQiWE3MY74UtG4nC.output.variable_workflow_01PP75S3G7CJY6WAQr2IJC7qga2SIoE09gQ$",
+                        "variable_workflow_01WQL1058N5KZ5DYeB70PK1mmCwXfhcTyM9": "$activity.definition_activity_01WPMRCNE6DC812BnjSla9lDAsRFQRZqARm.input.source_array[@].firstTimestampUsecs$",
+                        "variable_workflow_01WQL1058ND4D48Qmjo8pe9XTHlGAU3i0ES": "$activity.definition_activity_01WQJPR50XBUT1ntFnq9YnzRvAZCrrZ3Dxo.output.variable_workflow_01WQJMJLIWXZB6xeCqPqOaXuLiab8yhtJN7$",
+                        "variable_workflow_01WQL28BVCEFS696tZJIxUDC4i9k2ahizf4": "$activity.definition_activity_01WPMRCNE6DC812BnjSla9lDAsRFQRZqARm.input.source_array[@].firstTimestampUsecs$"
+                      },
+                      "runtime_user": {
+                        "target_default": true
+                      },
+                      "skip_execution": false,
+                      "target": {
+                        "no_target": true
+                      },
+                      "workflow_id": "definition_workflow_01WQL1050PLUY6MftLx1n4P9cx7LJBCLYIR",
+                      "workflow_name": "Threat Response - Update Incident Time"
+                    },
+                    "object_type": "definition_activity"
+                  },
+                  {
+                    "unique_name": "definition_activity_01WQLHBNY9X7L48eaDcThqbvvtOJd4oYiza",
+                    "name": "Set Variables",
+                    "title": "Update Incident",
+                    "type": "core.set_multiple_variables",
+                    "base_type": "activity",
+                    "properties": {
+                      "continue_on_failure": false,
+                      "display_name": "Update Incident",
+                      "skip_execution": false,
+                      "variables_to_update": [
+                        {
+                          "variable_to_update": "$workflow.definition_workflow_01WNHW87PP5ZK7S7PHik8I1zKxEXMzZElkP.local.variable_workflow_01WQLD21VDCYT3MaDtuXZsaTWiQZ39kXvVC$",
+                          "variable_value_new": "$activity.definition_activity_01WQL6F57YUPN0I31s63TynmaJwpNk3Dux2.output.variable_workflow_01WQLI4DFC1NT2aXW9BSSad8epojwlTi0Ps$"
+                        }
+                      ]
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_01WRI51EK6EKF6A291EMT61a55lWQHR9fiJ",
+            "name": "JSONPath Query",
+            "title": "Extract Incident ID",
+            "type": "corejava.jsonpathquery",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "continue_on_failure": false,
+              "display_name": "Extract Incident ID",
+              "input_json": "$workflow.definition_workflow_01WNHW87PP5ZK7S7PHik8I1zKxEXMzZElkP.local.variable_workflow_01WQLD21VDCYT3MaDtuXZsaTWiQZ39kXvVC$",
+              "jsonpath_queries": [
+                {
+                  "jsonpath_query": "$.id",
+                  "jsonpath_query_name": "Incident ID",
+                  "jsonpath_query_type": "string"
+                }
+              ],
+              "skip_execution": false
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01WQLARU8RTC37CWAqbrk7xD0KG4TAidPNJ",
+            "name": "Threat Response - Create Relationship",
+            "title": "Threat Response - Create Relationship",
+            "type": "workflow.atomic_workflow",
+            "base_type": "subworkflow",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "Threat Response - Create Relationship",
+              "input": {
+                "variable_workflow_01PP78LVV8JKR6NKKuym8RA2VYFgUJrR4qU": "$activity.definition_activity_01WRI4MCJPRIO2X2CliC92o5nBA70Qj36HG.output.jsonpath_queries.Sighting ID$",
+                "variable_workflow_01PP78LVV8NS94TRyx07G3ajwZ5eE5oWZ36": "Cohesity Anomalous Object Sighting to Incident Relation",
+                "variable_workflow_01PP78LVV8P3X5wkMhrcIXTnToxb6HxuLpk": "$activity.definition_activity_01WO7NZQWA2LV1Y0GV4RQiWE3MY74UtG4nC.output.variable_workflow_01PP75S3G7CJY6WAQr2IJC7qga2SIoE09gQ$",
+                "variable_workflow_01PP78LVV8QB314gJIqe5PQHoWnRTMtwhK4": "amber",
+                "variable_workflow_01PP78LVV8RLZ02Yzy68Uz59X8kInnUomdU": "Cohesity Anomalous Object Sighting to Incident Relation",
+                "variable_workflow_01PP78LVV8SVF31gxGXEVhu26vewW98cJxO": "$activity.definition_activity_01WRI51EK6EKF6A291EMT61a55lWQHR9fiJ.output.jsonpath_queries.Incident ID$",
+                "variable_workflow_01PP78LVV8V4B28e1wJKo9WReVhIZ3bvM6f": "related-to"
+              },
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "target": {
+                "override_workflow_target": true,
+                "target_id": "definition_target_01WPLYALTQWRG63RQvJrjcZYmE1hGiUyO7y",
+                "target_type": "web-service.endpoint"
+              },
+              "workflow_id": "definition_workflow_01PP78LW2WNY80aDM6OHNiRu2VPG4BrR8bq",
+              "workflow_name": "Threat Response - Create Relationship"
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01WNWWKJRVXPG0Et4UoNGz2FjVgSaapHyDF",
+            "name": "Execute Python Script",
+            "title": "Compose message for Webex Teams",
+            "type": "python3.script",
+            "base_type": "activity",
+            "properties": {
+              "action_timeout": 180,
+              "continue_on_failure": false,
+              "display_name": "Compose message for Webex Teams",
+              "script": "import argparse\nimport datetime\nimport ast\nimport json\n\nparser = argparse.ArgumentParser()\nparser.add_argument(\"incident\", help=\"Threat Response API client id\")\nargs = parser.parse_args()\n\nincident = ast.literal_eval(args.incident)\nmessage_to_send = '# New Incident Created\\n'\nmessage_to_send += '**Incident source:** ' + incident['external_references'][0]['source_name'] + ' on **cluster name**: ' + incident['external_references'][0]['source_name'] + '\\n'\nmessage_to_send += '**Incident status:** ' + incident['status'] + '\\n'\nmessage_to_send += 'Click here to get more information: ' + incident['id'] + '\\n'\nmessage_to_send += incident['description']",
+              "script_arguments": [
+                "$workflow.definition_workflow_01WNHW87PP5ZK7S7PHik8I1zKxEXMzZElkP.local.variable_workflow_01WQLD21VDCYT3MaDtuXZsaTWiQZ39kXvVC$"
+              ],
+              "script_queries": [
+                {
+                  "script_query": "message_to_send",
+                  "script_query_name": "message_to_send",
+                  "script_query_type": "string"
+                }
+              ],
+              "skip_execution": false
+            },
+            "object_type": "definition_activity"
+          },
+          {
+            "unique_name": "definition_activity_01WNI10GU4OK22Zs8UI94iVXoeKU4pRasxL",
+            "name": "Send Alert to Webex Teams",
+            "title": "Send Alert to Webex Teams",
+            "type": "workflow.atomic_workflow",
+            "base_type": "subworkflow",
+            "properties": {
+              "continue_on_failure": false,
+              "display_name": "Send Alert to Webex Teams",
+              "input": {
+                "variable_workflow_01PP78DJH1TI76BYfsu9g0Tqj2S6cUxjtu5": "$workflow.definition_workflow_01WNHW87PP5ZK7S7PHik8I1zKxEXMzZElkP.input.variable_workflow_01WNW3TRU3JGL2t3TTK4cW1gVzYS89HSOdu$",
+                "variable_workflow_01PP78DJH1XNQ7gNQ5iZdperRHqrppzARXC": "$workflow.definition_workflow_01WNHW87PP5ZK7S7PHik8I1zKxEXMzZElkP.input.variable_workflow_01WNW6E5N501W07MUQTKGqylmMnFSqkj5Jo$",
+                "variable_workflow_01PP78DJH1YWL3allalGQbg1VkgKwh9GvCi": "$activity.definition_activity_01WNWWKJRVXPG0Et4UoNGz2FjVgSaapHyDF.output.script_queries.message_to_send$",
+                "variable_workflow_01PP78DJH22BB3Ej3I8tJ4OCQur0unYGjj9": "",
+                "variable_workflow_01SVERQNMKN8N6vqX2djMtAfshphGydGsH8": ""
+              },
+              "runtime_user": {
+                "target_default": true
+              },
+              "skip_execution": false,
+              "target": {
+                "override_workflow_target": true,
+                "target_id": "definition_target_01N8PCRSVGLBW6EJQouV4nMsJnqbN2VLobU",
+                "target_type": "web-service.endpoint"
+              },
+              "workflow_id": "definition_workflow_01PP78DJMXS415nTjonujf03ROkr6t2PNyw",
+              "workflow_name": "Webex Teams - Post Message to Room"
+            },
+            "object_type": "definition_activity"
+          }
+        ]
+      }
+    ],
+    "categories": [
+      "category_1BMfMXSnJMyt5Ihqi7rWJr5N8cf"
+    ]
+  },
+  "triggers": {
+    "triggerschedule_01WNHW89Z8IID1JWPdyEfDVY9eTCvr48sYX": {
+      "workflow_id": "definition_workflow_01WNHW87PP5ZK7S7PHik8I1zKxEXMzZElkP",
+      "name": "Cohesity Ransomware Alerts",
+      "title": "",
+      "lowercase_name": "schedule.cohesity_ransomware_alerts",
+      "description": "Trigger to push ransomeware alert data to Threat Response private intelligence data store and Service Now ",
+      "type": "schedule",
+      "base_type": "trigger",
+      "ref_id": "schedule_01OD0U5F998SU05n5KmkBk6cfVG8udoEcnw",
+      "version": "1.0.0",
+      "disabled": true,
+      "unique_name": "triggerschedule_01WNHW89Z8IID1JWPdyEfDVY9eTCvr48sYX",
+      "object_type": "triggerschedule"
+    }
+  },
+  "schedules": {
+    "schedule_01OD0U5F998SU05n5KmkBk6cfVG8udoEcnw": {
+      "unique_name": "schedule_01OD0U5F998SU05n5KmkBk6cfVG8udoEcnw",
+      "name": "Cohesity Helios Ransomware Data Push Schedule",
+      "description": "Schedule to trigger orchestration workflow to push Helios ransomware data to private intelligence",
+      "type": "basic.schedule",
+      "base_type": "schedule",
+      "properties": {
+        "calendar": "calendar_recurring_1BMfMWvgiDhSjBQ7hTSyvz3NyVZ",
+        "timezone": "Etc/GMT+0",
+        "starttime": "00:00",
+        "interval_hours": 1,
+        "interval_minutes": 0,
+        "number_of_times": 24,
+        "display_name": "Cohesity Helios Ransomware Data Push Schedule",
+        "description": "Schedule to trigger orchestration workflow to push Helios ransomware data to private intelligence"
+      },
+      "version": "1.0.0",
+      "object_type": "schedule"
+    }
+  },
+  "targets": {
+    "definition_target_01N8PCQX9ZC5U6NExUT76vZb8UCtLBXBJx3": {
+      "unique_name": "definition_target_01N8PCQX9ZC5U6NExUT76vZb8UCtLBXBJx3",
+      "name": "CTR_For_Access_Token",
+      "title": "CTR Target for access token",
+      "type": "web-service.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "default_runtime_user_id": "definition_runtime_user_01N8PCQ28E54R0wunzODuP2jLNKnPCBOnz0",
+        "description": "CTR_For_Access_Token",
+        "disable_certificate_validation": false,
+        "display_name": "CTR_For_Access_Token",
+        "host": "visibility.eu.amp.cisco.com",
+        "no_runtime_user": false,
+        "path": "/iroh",
+        "protocol": "https"
+      }
+    },
+    "definition_target_01N8PCRSVGLBW6EJQouV4nMsJnqbN2VLobU": {
+      "unique_name": "definition_target_01N8PCRSVGLBW6EJQouV4nMsJnqbN2VLobU",
+      "name": "Webex Teams",
+      "title": "Webex Teams",
+      "type": "web-service.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "description": "Webex Teams",
+        "disable_certificate_validation": false,
+        "display_name": "Webex Teams",
+        "host": "webexapis.com",
+        "no_runtime_user": true,
+        "port": 443,
+        "protocol": "https"
+      }
+    },
+    "definition_target_01WPLYALTQWRG63RQvJrjcZYmE1hGiUyO7y": {
+      "unique_name": "definition_target_01WPLYALTQWRG63RQvJrjcZYmE1hGiUyO7y",
+      "name": "CTR Private Intel EU API",
+      "title": "CTR Private Intel EU API",
+      "type": "web-service.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "disable_certificate_validation": false,
+        "display_name": "CTR Private Intel EU API",
+        "host": "private.intel.eu.amp.cisco.com",
+        "ignore_proxy": false,
+        "no_runtime_user": true,
+        "protocol": "https"
+      }
+    },
+    "definition_target_01WPO62LSE4OH3RvfB3Tdgxj59o2lLVM3Ry": {
+      "unique_name": "definition_target_01WPO62LSE4OH3RvfB3Tdgxj59o2lLVM3Ry",
+      "name": "Cohesity Helios API",
+      "title": "Cohesity Helios API",
+      "type": "web-service.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "disable_certificate_validation": false,
+        "display_name": "Cohesity Helios API",
+        "host": "helios.cohesity.com",
+        "ignore_proxy": false,
+        "no_runtime_user": true,
+        "protocol": "https"
+      }
+    }
+  },
+  "runtime_users": {
+    "definition_runtime_user_01N8PCQ28E54R0wunzODuP2jLNKnPCBOnz0": {
+      "unique_name": "definition_runtime_user_01N8PCQ28E54R0wunzODuP2jLNKnPCBOnz0",
+      "name": "CTR_Credentials",
+      "title": "CTR_Credentials",
+      "description": "Account Key for CTR",
+      "type": "runtime_user.web-service_basic_credentials",
+      "base_type": "runtime_user",
+      "object_type": "definition_runtime_user",
+      "properties": {
+        "auth_option": "Basic",
+        "basic_password": "*****",
+        "basic_username": "client-f3ef2f53-4906-4585-8b40-67464659fb59",
+        "display_name": "CTR_Credentials"
+      }
+    }
+  },
+  "variables": {
+    "variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46": {
+      "unique_name": "variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46",
+      "properties": {
+        "value": "*****",
+        "scope": "global",
+        "name": "Cohesity Helios API",
+        "type": "datatype.secure_string",
+        "is_required": false,
+        "is_invisible": false
+      },
+      "object_type": "variable"
+    }
+  },
+  "atomic_workflows": [
+    "definition_workflow_01WPSZ60JOEEX2UGsvnysh9AERfxEkHgL0r",
+    "definition_workflow_01PP78DJMXS415nTjonujf03ROkr6t2PNyw",
+    "definition_workflow_01WQK01M0ZM7E5iCwWRnvoDaOyx7RDA0j7t",
+    "definition_workflow_01WQL1050PLUY6MftLx1n4P9cx7LJBCLYIR",
+    "definition_workflow_01WQJMJLAZ7UM6ltyJR5IlWtxWSMBPhtffW",
+    "definition_workflow_01WRK42CVKIFK1NLl1wnGJQp57UEqazGdlw",
+    "definition_workflow_01PP75S3LTBW4420OZU3rdHWKHFnE6aC7yH",
+    "definition_workflow_01WO7W8QW8N904O78E18X3z7v9F0rz6F8mI",
+    "definition_workflow_01PP78LW2WNY80aDM6OHNiRu2VPG4BrR8bq",
+    "definition_workflow_01WPPFQQ48YFD579SBivrxbkW3maKxEqAO6"
+  ],
+  "dependent_workflows": [
+    "definition_workflow_01WRK42CVKIFK1NLl1wnGJQp57UEqazGdlw",
+    "definition_workflow_01PP75S3LTBW4420OZU3rdHWKHFnE6aC7yH",
+    "definition_workflow_01WO7W8QW8N904O78E18X3z7v9F0rz6F8mI",
+    "definition_workflow_01WQJMJLAZ7UM6ltyJR5IlWtxWSMBPhtffW",
+    "definition_workflow_01WPSZ60JOEEX2UGsvnysh9AERfxEkHgL0r",
+    "definition_workflow_01WPPFQQ48YFD579SBivrxbkW3maKxEqAO6",
+    "definition_workflow_01WQK01M0ZM7E5iCwWRnvoDaOyx7RDA0j7t",
+    "definition_workflow_01WQL1050PLUY6MftLx1n4P9cx7LJBCLYIR",
+    "definition_workflow_01PP78LW2WNY80aDM6OHNiRu2VPG4BrR8bq",
+    "definition_workflow_01PP78DJMXS415nTjonujf03ROkr6t2PNyw"
+  ]
+}
