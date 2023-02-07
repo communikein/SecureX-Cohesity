@@ -1,0 +1,1110 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_01WS6ZH220MI46s4NnX6cpKdt7DkL29g3Gj",
+    "name": "Cohesity - Action from Bot",
+    "title": "Cohesity - Action from Bot",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "local",
+          "name": "Message",
+          "type": "datatype.string",
+          "is_required": false,
+          "is_invisible": false
+        },
+        "unique_name": "variable_workflow_01WT2LSQY2NZU6qKd7VsXhmD3nx0kVHaO5O",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "is_atomic": false
+      },
+      "delete_workflow_instance": false,
+      "display_name": "Cohesity - Action from Bot",
+      "runtime_user": {
+        "target_default": true
+      },
+      "target": {
+        "no_target": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ",
+        "name": "JSONPath Query",
+        "title": "Extract Event Payload",
+        "type": "corejava.jsonpathquery",
+        "base_type": "activity",
+        "properties": {
+          "action_timeout": 180,
+          "continue_on_failure": false,
+          "display_name": "Extract Event Payload",
+          "input_json": "$trigger.triggerevent_01WU1BTNDMT6D6QPECeQE1lEYjHPYFaFyI2.output.request_body$",
+          "jsonpath_queries": [
+            {
+              "jsonpath_query": "$.room_id",
+              "jsonpath_query_name": "Room ID",
+              "jsonpath_query_type": "string"
+            },
+            {
+              "jsonpath_query": "$.action",
+              "jsonpath_query_name": "Action",
+              "jsonpath_query_type": "string"
+            },
+            {
+              "jsonpath_query": "$.bot_token",
+              "jsonpath_query_name": "Bot Token",
+              "jsonpath_query_type": "string"
+            },
+            {
+              "jsonpath_query": "$.action_args",
+              "jsonpath_query_name": "Action Args",
+              "jsonpath_query_type": "string"
+            }
+          ],
+          "skip_execution": false
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01WU0NGC8ZCLZ1pQkyKaC4B2gkDlndmBJ7H",
+        "name": "Condition Block",
+        "title": "Check action",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Check action",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_01WU0NGC8ZUEF1DjwpTudi1WE470x9Om9Ss",
+            "name": "Condition Branch",
+            "title": "Get Alerts",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Action$",
+                "operator": "eq",
+                "right_operand": "get_alerts"
+              },
+              "continue_on_failure": false,
+              "display_name": "Get Alerts",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01WXFLOWELN5Z5vPUZWwCg4KEPag4IkZmNG",
+                "name": "Cohesity - Push Ransomware Alerts to SecureX",
+                "title": "Cohesity - Push Ransomware Alerts to SecureX",
+                "type": "workflow.sub_workflow",
+                "base_type": "subworkflow",
+                "properties": {
+                  "continue_on_failure": false,
+                  "description": "Get all the ransomware alerts limited to our infrastructure for the past 3 months (2160 hours).",
+                  "display_name": "Cohesity - Push Ransomware Alerts to SecureX",
+                  "input": {
+                    "variable_workflow_01WNHW87XBN0J2R9xyz23OW70ABHxGZQIuQ": "2160",
+                    "variable_workflow_01WNW3TRU3JGL2t3TTK4cW1gVzYS89HSOdu": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Room ID$",
+                    "variable_workflow_01WTDSORO8B4Q1YG5bY2SGXunpJwn4aUFR2": "$global.variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46.global.variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46$",
+                    "variable_workflow_01WTE2UZEEMK432AqXOaUhop2kw5kReocib": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Bot Token$"
+                  },
+                  "runtime_user": {
+                    "target_default": true
+                  },
+                  "skip_execution": false,
+                  "target": {
+                    "no_target": true
+                  },
+                  "workflow_id": "definition_workflow_01WNHW87PP5ZK7S7PHik8I1zKxEXMzZElkP",
+                  "workflow_name": "Cohesity - Push Ransomware Alerts to SecureX"
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_01WXFO7LZ49LB5tdAc1RGn4TN9tcSFv4j8b",
+                "name": "Read Table from JSON",
+                "title": "Read Table from JSON",
+                "type": "corejava.read_table_from_json",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "continue_on_failure": false,
+                  "display_name": "Read Table from JSON",
+                  "input_json": "$activity.definition_activity_01WXFLOWELN5Z5vPUZWwCg4KEPag4IkZmNG.output.variable_workflow_01WXBBXWDOAEL0nEA60BTYyifB7UEqKsESn$",
+                  "jsonpath_query": "$.",
+                  "persist_output": true,
+                  "populate_columns": false,
+                  "skip_execution": false,
+                  "table_columns": [
+                    {
+                      "column_name": "id",
+                      "column_type": "string"
+                    },
+                    {
+                      "column_name": "status",
+                      "column_type": "string"
+                    },
+                    {
+                      "column_name": "description",
+                      "column_type": "string"
+                    },
+                    {
+                      "column_name": "external_references",
+                      "column_type": "string"
+                    },
+                    {
+                      "column_name": "alert_id",
+                      "column_type": "string"
+                    },
+                    {
+                      "column_name": "observable",
+                      "column_type": "string"
+                    },
+                    {
+                      "column_name": "cluster_name",
+                      "column_type": "string"
+                    },
+                    {
+                      "column_name": "cluster_id",
+                      "column_type": "string"
+                    }
+                  ]
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_01WXFPWZZ4F0O7ZJSVaXNYgZ8MLHotJfWqc",
+                "name": "Condition Block",
+                "title": "Check alerts count",
+                "type": "logic.if_else",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Check alerts count",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity",
+                "blocks": [
+                  {
+                    "unique_name": "definition_activity_01WXFPX05D0FG785639LJUCWyKF3RVHDzUh",
+                    "name": "Condition Branch",
+                    "title": "Alerts found",
+                    "type": "logic.condition_block",
+                    "base_type": "activity",
+                    "properties": {
+                      "condition": {
+                        "left_operand": "$activity.definition_activity_01WXFO7LZ49LB5tdAc1RGn4TN9tcSFv4j8b.output.row_count$",
+                        "operator": "gt",
+                        "right_operand": 0
+                      },
+                      "continue_on_failure": false,
+                      "display_name": "Alerts found",
+                      "skip_execution": false
+                    },
+                    "object_type": "definition_activity",
+                    "actions": [
+                      {
+                        "unique_name": "definition_activity_01WXFQJU0X74E44TqXnwjZR0n9ES6UW2G5S",
+                        "name": "For Each",
+                        "title": "For Each",
+                        "type": "logic.for_each",
+                        "base_type": "activity",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "display_name": "For Each",
+                          "skip_execution": false,
+                          "source_array": "$activity.definition_activity_01WXFO7LZ49LB5tdAc1RGn4TN9tcSFv4j8b.output.read_table_from_json$"
+                        },
+                        "object_type": "definition_activity",
+                        "actions": [
+                          {
+                            "unique_name": "definition_activity_01WXFQY2HKWPQ6absQFJBccZS1G2Vx2T1wv",
+                            "name": "Execute Python Script",
+                            "title": "Compose Bot Response",
+                            "type": "python3.script",
+                            "base_type": "activity",
+                            "properties": {
+                              "action_timeout": 180,
+                              "continue_on_failure": false,
+                              "display_name": "Compose Bot Response",
+                              "script": "import argparse, ast, json\n\nparser = argparse.ArgumentParser()\nparser.add_argument(\"incident_id\")\nparser.add_argument(\"incident_status\")\nparser.add_argument(\"incident_description\")\nparser.add_argument(\"incident_external_references\")\nparser.add_argument(\"ransomware_alert_id\")\nparser.add_argument(\"observable\")\nparser.add_argument(\"cluster_name\")\nparser.add_argument(\"cluster_id\")\nargs = parser.parse_args()\n\nincident_source = ast.literal_eval(args.incident_external_references)[0]['source_name']\nincident_cluster = args.observable\nincident_status = args.incident_status\nincident_id = args.incident_id\nincident_description = args.incident_description\n\nalert_parts = incident_description.split('\\\\n')\nalert_summary = alert_parts[1]\nalert_description = alert_parts[2]\nalert_name = alert_parts[3]\nalert_cause = alert_parts[4]\nalert_help = alert_parts[5]\n\nmessage_to_send = '# New Incident Created\\n' \\\n  '**Incident source:** ' + args.observable + ' on **cluster name**: ' + incident_cluster + '\\n' \\\n  '**Incident status:** ' + incident_status + '\\n'\n\nwebex_card = {\n    \"contentType\": \"application/vnd.microsoft.card.adaptive\",\n    \"content\": {\n        \"$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\",\n        \"version\": \"1.2\",\n        \"type\": \"AdaptiveCard\",\n        \"body\": [\n            {\n                \"type\": \"ColumnSet\",\n                \"columns\": [\n                    {\n                        \"type\": \"Column\",\n                        \"items\": [\n                            {\n                                \"type\": \"Image\",\n                                \"style\": \"Person\",\n                                \"url\": \"https://blog.vgeek.it/wp-content/uploads/2018/11/cohesity.png\",\n                                \"size\": \"Medium\",\n                                \"height\": \"50px\"\n                            }\n                        ],\n                        \"width\": \"auto\"\n                    },\n                    {\n                        \"type\": \"Column\",\n                        \"items\": [\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": \"Ransomware Detection & Protection\",\n                                \"weight\": \"Lighter\",\n                                \"color\": \"Accent\"\n                            },\n                            {\n                                \"type\": \"TextBlock\",\n                                \"weight\": \"Lighter\",\n                                \"text\": \"New Incident Created\",\n                                \"wrap\": True,\n                                \"color\": \"Light\",\n                                \"spacing\": \"Small\"\n                            }\n                        ],\n                        \"width\": \"stretch\"\n                    }\n                ]\n            },\n            {\n                \"type\": \"ColumnSet\",\n                \"columns\": [\n                    {\n                        \"type\": \"Column\",\n                        \"width\": 20,\n                        \"items\": [\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": \"Alert ID:\",\n                                \"color\": \"Light\",\n                                \"spacing\": \"Small\"\n                            },\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": \"Source:\",\n                                \"color\": \"Light\",\n                                \"spacing\": \"Small\"\n                            },\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": \"Cluster:\",\n                                \"weight\": \"Lighter\",\n                                \"color\": \"Light\",\n                                \"spacing\": \"Small\"\n                            },\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": \"Status:\",\n                                \"weight\": \"Lighter\",\n                                \"color\": \"Light\",\n                                \"spacing\": \"Small\"\n                            }\n                        ]\n                    },\n                    {\n                        \"type\": \"Column\",\n                        \"width\": 80,\n                        \"items\": [\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": args.ransomware_alert_id,\n                                \"color\": \"Light\",\n                                \"spacing\": \"Small\",\n                                \"id\": \"incident_alert_id\"\n                            },\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": args.observable,\n                                \"color\": \"Light\",\n                                \"spacing\": \"Small\",\n                                \"id\": \"incident_source\"\n                            },\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": args.cluster_name, \n                                \"color\": \"Light\",\n                                \"weight\": \"Lighter\",\n                                \"spacing\": \"Small\",\n                                \"id\": \"incident_cluster\"\n                            },\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": incident_status,\n                                \"weight\": \"Lighter\",\n                                \"color\": \"Light\",\n                                \"spacing\": \"Small\",\n                                \"id\": \"incident_status\"\n                            }\n                        ]\n                    }\n                ],\n                \"spacing\": \"Padding\",\n                \"horizontalAlignment\": \"Center\"\n            },\n            {\n                \"type\": \"TextBlock\",\n                \"text\": alert_summary,\n                \"wrap\": True,\n            },\n            {\n                \"type\": \"TextBlock\",\n                \"text\": alert_description,\n                \"wrap\": True,\n            },\n            {\n                \"type\": \"TextBlock\",\n                \"text\": alert_name,\n                \"wrap\": True,\n            },\n            {\n                \"type\": \"TextBlock\",\n                \"text\": alert_cause,\n                \"wrap\": True,\n            },\n            {\n                \"type\": \"TextBlock\",\n                \"text\": alert_help,\n                \"wrap\": True,\n            },\n            {\n                \"type\": \"ColumnSet\",\n                \"columns\": [\n                    {\n                        \"type\": \"Column\",\n                        \"width\": \"auto\",\n                        \"items\": [\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": \"[Click here to get more information](\" + incident_id + \")\",\n                                \"size\": \"Medium\"\n                            }\n                        ],\n                        \"verticalContentAlignment\": \"Center\",\n                        \"spacing\": \"Small\"\n                    }\n                ],\n                \"id\": \"alert_link\"\n            },\n            {\n                \"type\": \"ActionSet\",\n                \"actions\": [\n                    {\n                        \"type\": \"Action.Submit\",\n                        \"title\": \"Restore VM\",\n                        \"data\": {\n                            \"action\": \"restore\",\n                            \"alert_id\": str(args.ransomware_alert_id),\n                            \"action_args\": {\n                              \"alert_id\": str(args.ransomware_alert_id)\n                            }\n                        }\n                    },\n                    {\n                        \"type\": \"Action.Submit\",\n                        \"title\": \"Ignore Alert\",\n                        \"data\": {\n                            \"action\": \"ignore\",\n                            \"alert_id\": str(args.ransomware_alert_id),\n                            \"action_args\": {\n                              \"alert_id\": str(args.ransomware_alert_id)\n                            }\n                        }\n                    },\n                    {\n                        \"type\": \"Action.Submit\",\n                        \"title\": \"Clone VM\",\n                        \"data\": {\n                            \"action\": \"clone\",\n                            \"alert_id\": str(args.ransomware_alert_id),\n                            \"action_args\": {\n                              \"alert_id\": str(args.ransomware_alert_id)\n                            }\n                        }\n                    }\n                ],\n                \"spacing\": \"None\"\n            }\n        ]\n    }\n}\nwebex_card = json.dumps(webex_card)",
+                              "script_arguments": [
+                                "$activity.definition_activity_01WXFQJU0X74E44TqXnwjZR0n9ES6UW2G5S.input.source_array[@].id$",
+                                "$activity.definition_activity_01WXFQJU0X74E44TqXnwjZR0n9ES6UW2G5S.input.source_array[@].status$",
+                                "$activity.definition_activity_01WXFQJU0X74E44TqXnwjZR0n9ES6UW2G5S.input.source_array[@].description$",
+                                "$activity.definition_activity_01WXFQJU0X74E44TqXnwjZR0n9ES6UW2G5S.input.source_array[@].external_references$",
+                                "$activity.definition_activity_01WXFQJU0X74E44TqXnwjZR0n9ES6UW2G5S.input.source_array[@].alert_id$",
+                                "$activity.definition_activity_01WXFQJU0X74E44TqXnwjZR0n9ES6UW2G5S.input.source_array[@].observable$",
+                                "$activity.definition_activity_01WXFQJU0X74E44TqXnwjZR0n9ES6UW2G5S.input.source_array[@].cluster_name$",
+                                "$activity.definition_activity_01WXFQJU0X74E44TqXnwjZR0n9ES6UW2G5S.input.source_array[@].cluster_id$"
+                              ],
+                              "script_queries": [
+                                {
+                                  "script_query": "message_to_send",
+                                  "script_query_name": "Markdown Message",
+                                  "script_query_type": "string"
+                                },
+                                {
+                                  "script_query": "webex_card",
+                                  "script_query_name": "Card",
+                                  "script_query_type": "string"
+                                }
+                              ],
+                              "skip_execution": false
+                            },
+                            "object_type": "definition_activity"
+                          },
+                          {
+                            "unique_name": "definition_activity_01WXFSWR0X7SR4PwhJ9bvOdi3UsDpL2L5hE",
+                            "name": "Webex Teams - Post Message to Room",
+                            "title": "Webex Teams - Post Message to Room",
+                            "type": "workflow.atomic_workflow",
+                            "base_type": "subworkflow",
+                            "properties": {
+                              "continue_on_failure": false,
+                              "display_name": "Webex Teams - Post Message to Room",
+                              "input": {
+                                "variable_workflow_01PP78DJH1TI76BYfsu9g0Tqj2S6cUxjtu5": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Room ID$",
+                                "variable_workflow_01PP78DJH1XNQ7gNQ5iZdperRHqrppzARXC": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Bot Token$",
+                                "variable_workflow_01PP78DJH1YWL3allalGQbg1VkgKwh9GvCi": "$activity.definition_activity_01WXFQY2HKWPQ6absQFJBccZS1G2Vx2T1wv.output.script_queries.Markdown Message$",
+                                "variable_workflow_01PP78DJH22BB3Ej3I8tJ4OCQur0unYGjj9": "",
+                                "variable_workflow_01SVERQNMKN8N6vqX2djMtAfshphGydGsH8": "$activity.definition_activity_01WXFQY2HKWPQ6absQFJBccZS1G2Vx2T1wv.output.script_queries.Card$"
+                              },
+                              "runtime_user": {
+                                "target_default": true
+                              },
+                              "skip_execution": false,
+                              "target": {
+                                "override_workflow_target": true,
+                                "target_id": "definition_target_01N8PCRSVGLBW6EJQouV4nMsJnqbN2VLobU",
+                                "target_type": "web-service.endpoint"
+                              },
+                              "workflow_id": "definition_workflow_01PP78DJMXS415nTjonujf03ROkr6t2PNyw",
+                              "workflow_name": "Webex - Post Message to Room"
+                            },
+                            "object_type": "definition_activity"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "unique_name": "definition_activity_01WXFPX0DSRSX5kzKeRGx7kz4zKf7XmZCU0",
+                    "name": "Condition Branch",
+                    "title": "No alerts found",
+                    "type": "logic.condition_block",
+                    "base_type": "activity",
+                    "properties": {
+                      "condition": {
+                        "left_operand": "$activity.definition_activity_01WXFO7LZ49LB5tdAc1RGn4TN9tcSFv4j8b.output.row_count$",
+                        "operator": "eq",
+                        "right_operand": 0
+                      },
+                      "continue_on_failure": false,
+                      "display_name": "No alerts found",
+                      "skip_execution": false
+                    },
+                    "object_type": "definition_activity",
+                    "actions": [
+                      {
+                        "unique_name": "definition_activity_01WXFT0ES4YUK2XaQshYFBdW4YvGm07vAzY",
+                        "name": "Webex Teams - Post Message to Room",
+                        "title": "Webex Teams - Post Message to Room",
+                        "type": "workflow.atomic_workflow",
+                        "base_type": "subworkflow",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "display_name": "Webex Teams - Post Message to Room",
+                          "input": {
+                            "variable_workflow_01PP78DJH1TI76BYfsu9g0Tqj2S6cUxjtu5": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Room ID$",
+                            "variable_workflow_01PP78DJH1XNQ7gNQ5iZdperRHqrppzARXC": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Bot Token$",
+                            "variable_workflow_01PP78DJH1YWL3allalGQbg1VkgKwh9GvCi": "**No alerts found**",
+                            "variable_workflow_01PP78DJH22BB3Ej3I8tJ4OCQur0unYGjj9": "",
+                            "variable_workflow_01SVERQNMKN8N6vqX2djMtAfshphGydGsH8": ""
+                          },
+                          "runtime_user": {
+                            "target_default": true
+                          },
+                          "skip_execution": false,
+                          "target": {
+                            "override_workflow_target": true,
+                            "target_id": "definition_target_01N8PCRSVGLBW6EJQouV4nMsJnqbN2VLobU",
+                            "target_type": "web-service.endpoint"
+                          },
+                          "workflow_id": "definition_workflow_01PP78DJMXS415nTjonujf03ROkr6t2PNyw",
+                          "workflow_name": "Webex - Post Message to Room"
+                        },
+                        "object_type": "definition_activity"
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_01WU0NGC951CK2rHlbswTfz0Veuq0VlrdUz",
+            "name": "Condition Branch",
+            "title": "Clone VM",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Action$",
+                "operator": "eq",
+                "right_operand": "clone"
+              },
+              "continue_on_failure": false,
+              "display_name": "Clone VM",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01WXHNWB4TF0X3C39Gb1smxPcRtjMTCwVQO",
+                "name": "Webex Teams - Post Message to Room",
+                "title": "Webex Teams - Post Message to Room",
+                "type": "workflow.atomic_workflow",
+                "base_type": "subworkflow",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Webex Teams - Post Message to Room",
+                  "input": {
+                    "variable_workflow_01PP78DJH1TI76BYfsu9g0Tqj2S6cUxjtu5": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Room ID$",
+                    "variable_workflow_01PP78DJH1XNQ7gNQ5iZdperRHqrppzARXC": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Bot Token$",
+                    "variable_workflow_01PP78DJH1YWL3allalGQbg1VkgKwh9GvCi": "Requested action \"**Clone VM**\" received!",
+                    "variable_workflow_01PP78DJH22BB3Ej3I8tJ4OCQur0unYGjj9": "",
+                    "variable_workflow_01SVERQNMKN8N6vqX2djMtAfshphGydGsH8": ""
+                  },
+                  "runtime_user": {
+                    "target_default": true
+                  },
+                  "skip_execution": true,
+                  "target": {
+                    "override_workflow_target": true,
+                    "target_id": "definition_target_01N8PCRSVGLBW6EJQouV4nMsJnqbN2VLobU",
+                    "target_type": "web-service.endpoint"
+                  },
+                  "workflow_id": "definition_workflow_01PP78DJMXS415nTjonujf03ROkr6t2PNyw",
+                  "workflow_name": "Webex - Post Message to Room"
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_01WYWHB7ETI117Qp7Q7aJTE3p1K6rZJZFsB",
+                "name": "JSONPath Query",
+                "title": "JSONPath Query",
+                "type": "corejava.jsonpathquery",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "continue_on_failure": false,
+                  "display_name": "JSONPath Query",
+                  "input_json": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Action Args$",
+                  "jsonpath_queries": [
+                    {
+                      "jsonpath_query": "$.alert_id",
+                      "jsonpath_query_name": "Alert ID",
+                      "jsonpath_query_type": "string"
+                    }
+                  ],
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_01WYWGX6VZHSS0NAVYysKzb8AAzW5HFNN81",
+                "name": "Cohesity - Clone VM Object",
+                "title": "Cohesity - Clone VM Object",
+                "type": "workflow.sub_workflow",
+                "base_type": "subworkflow",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Cohesity - Clone VM Object",
+                  "input": {
+                    "variable_workflow_01WT5DR915BQY5G6vRuJiv5ELDzkSwxlBUp": "$global.variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46.global.variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46$",
+                    "variable_workflow_01WYWB22Q6NAO5wfjkArM5BPWjV4UraBPDh": "$activity.definition_activity_01WYWHB7ETI117Qp7Q7aJTE3p1K6rZJZFsB.output.jsonpath_queries.Alert ID$",
+                    "variable_workflow_01X0PGWBKGD530dzRIHkzK6yeXspynw18Ei": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Bot Token$",
+                    "variable_workflow_01X0PH3NZVQG05Qf6v5ZBKpDD8dDZJFisVj": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Room ID$"
+                  },
+                  "runtime_user": {
+                    "target_default": true
+                  },
+                  "skip_execution": false,
+                  "target": {
+                    "no_target": true
+                  },
+                  "workflow_id": "definition_workflow_01WT5DR8S3LKE0cgIEyK8GzpU56qkZfCD1K",
+                  "workflow_name": "Cohesity - Clone VM Object"
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_01X1J5ZBF4TTX2g0VeDSCR5KlvcvJtNvBwN",
+                "name": "Condition Block",
+                "title": "Check result",
+                "type": "logic.if_else",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Check result",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity",
+                "blocks": [
+                  {
+                    "unique_name": "definition_activity_01X1J5ZBKZ8CN7lZk88bXK4LliXj1R80Umi",
+                    "name": "Condition Branch",
+                    "title": "Clone created",
+                    "type": "logic.condition_block",
+                    "base_type": "activity",
+                    "properties": {
+                      "condition": {
+                        "left_operand": "$activity.definition_activity_01WYWGX6VZHSS0NAVYysKzb8AAzW5HFNN81.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "continue_on_failure": false,
+                      "display_name": "Clone created",
+                      "skip_execution": false
+                    },
+                    "object_type": "definition_activity",
+                    "actions": [
+                      {
+                        "unique_name": "definition_activity_01X1J5LZTCQGL6z81CqES45MxX93wiB4sfG",
+                        "name": "Execute Python Script",
+                        "title": "Compose Bot Response",
+                        "type": "python3.script",
+                        "base_type": "activity",
+                        "properties": {
+                          "action_timeout": 180,
+                          "continue_on_failure": false,
+                          "display_name": "Compose Bot Response",
+                          "script": "import argparse, ast, json\n\nparser = argparse.ArgumentParser()\nparser.add_argument(\"cloned_vm_id\")\nparser.add_argument(\"cloned_vm_name\")\nargs = parser.parse_args()\n\nmessage_to_send = '# The requested VM has been cloned\\n' + \\\n  '**Cloned VM name:** ' + args.cloned_vm_name + \\\n  '**Cloned VM ID:** ' + args.cloned_vm_id + '\\n'\n\nwebex_card = {\n    \"contentType\": \"application/vnd.microsoft.card.adaptive\",\n    \"content\": {\n        \"$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\",\n        \"version\": \"1.2\",\n        \"type\": \"AdaptiveCard\",\n        \"body\": [\n            {\n                \"type\": \"ColumnSet\",\n                \"columns\": [\n                    {\n                        \"type\": \"Column\",\n                        \"items\": [\n                            {\n                                \"type\": \"Image\",\n                                \"style\": \"Person\",\n                                \"url\": \"https://blog.vgeek.it/wp-content/uploads/2018/11/cohesity.png\",\n                                \"size\": \"Medium\",\n                                \"height\": \"50px\"\n                            }\n                        ],\n                        \"width\": \"auto\"\n                    },\n                    {\n                        \"type\": \"Column\",\n                        \"items\": [\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": \"Ransomware Detection & Protection\",\n                                \"weight\": \"Lighter\",\n                                \"color\": \"Accent\"\n                            },\n                            {\n                                \"type\": \"TextBlock\",\n                                \"weight\": \"Lighter\",\n                                \"text\": \"Clone task created\",\n                                \"wrap\": True,\n                                \"color\": \"Light\",\n                                \"spacing\": \"Small\"\n                            }\n                        ],\n                        \"width\": \"stretch\"\n                    }\n                ]\n            },\n            {\n                \"type\": \"ColumnSet\",\n                \"columns\": [\n                    {\n                        \"type\": \"Column\",\n                        \"width\": 35,\n                        \"items\": [\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": \"Cloned VM id:\",\n                                \"color\": \"Light\"\n                            },\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": \"Cloned VM Name:\",\n                                \"weight\": \"Lighter\",\n                                \"color\": \"Light\",\n                                \"spacing\": \"Small\"\n                            }\n                        ]\n                    },\n                    {\n                        \"type\": \"Column\",\n                        \"width\": 65,\n                        \"items\": [\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": args.cloned_vm_id,\n                                \"color\": \"Light\",\n                                \"id\": \"incident_source\"\n                            },\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": args.cloned_vm_name,\n                                \"color\": \"Light\",\n                                \"weight\": \"Lighter\",\n                                \"spacing\": \"Small\",\n                                \"id\": \"incident_cluster\"\n                            }\n                        ]\n                    }\n                ],\n                \"spacing\": \"Padding\",\n                \"horizontalAlignment\": \"Center\"\n            },\n            {\n                \"type\": \"ActionSet\",\n                \"actions\": [\n                    {\n                        \"type\": \"Action.Submit\",\n                        \"title\": \"Teardown Cloned VM\",\n                        \"data\": {\n                            \"action\": \"teardown-cloned-vm\",\n                            \"action_args\": {\n                              \"vm_id\": args.cloned_vm_id,\n                              \"vm_name\": args.cloned_vm_name\n                            }\n                        }\n                    }\n                ],\n                \"spacing\": \"None\"\n            }\n        ]\n    }\n}\nwebex_card = json.dumps(webex_card)",
+                          "script_arguments": [
+                            "$activity.definition_activity_01WYWGX6VZHSS0NAVYysKzb8AAzW5HFNN81.output.variable_workflow_01X1JD90ULR0W4ou5iJgWiebkpBl0SYZoJC$",
+                            "$activity.definition_activity_01WYWGX6VZHSS0NAVYysKzb8AAzW5HFNN81.output.variable_workflow_01X1JF4GZN3XN3n8rF1OsAOPw7taL0JcQ8C$"
+                          ],
+                          "script_queries": [
+                            {
+                              "script_query": "message_to_send",
+                              "script_query_name": "Markdown Message",
+                              "script_query_type": "string"
+                            },
+                            {
+                              "script_query": "webex_card",
+                              "script_query_name": "Card",
+                              "script_query_type": "string"
+                            }
+                          ],
+                          "skip_execution": false
+                        },
+                        "object_type": "definition_activity"
+                      },
+                      {
+                        "unique_name": "definition_activity_01X1K12ZWC1HW1I5kiu07qt113nHnwzX0iF",
+                        "name": "Webex - Post Message to Room",
+                        "title": "Webex - Post Message to Room",
+                        "type": "workflow.atomic_workflow",
+                        "base_type": "subworkflow",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "display_name": "Webex - Post Message to Room",
+                          "input": {
+                            "variable_workflow_01PP78DJH1TI76BYfsu9g0Tqj2S6cUxjtu5": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Room ID$",
+                            "variable_workflow_01PP78DJH1XNQ7gNQ5iZdperRHqrppzARXC": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Bot Token$",
+                            "variable_workflow_01PP78DJH1YWL3allalGQbg1VkgKwh9GvCi": "$activity.definition_activity_01X1J5LZTCQGL6z81CqES45MxX93wiB4sfG.output.script_queries.Markdown Message$",
+                            "variable_workflow_01PP78DJH22BB3Ej3I8tJ4OCQur0unYGjj9": "",
+                            "variable_workflow_01SVERQNMKN8N6vqX2djMtAfshphGydGsH8": "$activity.definition_activity_01X1J5LZTCQGL6z81CqES45MxX93wiB4sfG.output.script_queries.Card$"
+                          },
+                          "runtime_user": {
+                            "target_default": true
+                          },
+                          "skip_execution": false,
+                          "target": {
+                            "override_workflow_target": true,
+                            "target_id": "definition_target_01N8PCRSVGLBW6EJQouV4nMsJnqbN2VLobU",
+                            "target_type": "web-service.endpoint"
+                          },
+                          "workflow_id": "definition_workflow_01PP78DJMXS415nTjonujf03ROkr6t2PNyw",
+                          "workflow_name": "Webex - Post Message to Room"
+                        },
+                        "object_type": "definition_activity"
+                      }
+                    ]
+                  },
+                  {
+                    "unique_name": "definition_activity_01X1J5ZBR60JS4eo826148pFoeJIoMXkr8U",
+                    "name": "Condition Branch",
+                    "title": "Error",
+                    "type": "logic.condition_block",
+                    "base_type": "activity",
+                    "properties": {
+                      "condition": {
+                        "left_operand": "$activity.definition_activity_01WYWGX6VZHSS0NAVYysKzb8AAzW5HFNN81.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": false
+                      },
+                      "continue_on_failure": false,
+                      "display_name": "Error",
+                      "skip_execution": false
+                    },
+                    "object_type": "definition_activity"
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_01WU0NGC93JND3fyk95AHaPRSfzaCtrhTcP",
+            "name": "Condition Branch",
+            "title": "Ignore Alert",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Action$",
+                "operator": "eq",
+                "right_operand": "ignore"
+              },
+              "continue_on_failure": false,
+              "display_name": "Ignore Alert",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_021TMCZXY8ARR171U4xt7u0EVQH4gnySmkV",
+                "name": "JSONPath Query",
+                "title": "JSONPath Query",
+                "type": "corejava.jsonpathquery",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "continue_on_failure": false,
+                  "display_name": "JSONPath Query",
+                  "input_json": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Action Args$",
+                  "jsonpath_queries": [
+                    {
+                      "jsonpath_query": "$.alert_id",
+                      "jsonpath_query_name": "Ransomware Alert ID",
+                      "jsonpath_query_type": "string",
+                      "zdate_type_format": "yyyy-MM-dd'T'HH:mm:ssZ"
+                    }
+                  ],
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_021TMCFFGDR876RaEbaN8RxU6W8gD6hjD6h",
+                "name": "Execute Python Script",
+                "title": "Compose Bot Response",
+                "type": "python3.script",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "continue_on_failure": false,
+                  "display_name": "Compose Bot Response",
+                  "script": "import argparse, ast, json\n\nparser = argparse.ArgumentParser()\nparser.add_argument(\"alert_id\")\nargs = parser.parse_args()\n\nmessage_to_send = '# Ransomware Alert Ignored\\n' \\\n  '**Alert ID:** ' + args.alert_id + '\\n'\n\nwebex_card = {\n    \"contentType\": \"application/vnd.microsoft.card.adaptive\",\n    \"content\": {\n        \"$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\",\n        \"version\": \"1.2\",\n        \"type\": \"AdaptiveCard\",\n        \"body\": [\n            {\n                \"type\": \"ColumnSet\",\n                \"columns\": [\n                    {\n                        \"type\": \"Column\",\n                        \"items\": [\n                            {\n                                \"type\": \"Image\",\n                                \"style\": \"Person\",\n                                \"url\": \"https://blog.vgeek.it/wp-content/uploads/2018/11/cohesity.png\",\n                                \"size\": \"Medium\",\n                                \"height\": \"50px\"\n                            }\n                        ],\n                        \"width\": \"auto\"\n                    },\n                    {\n                        \"type\": \"Column\",\n                        \"items\": [\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": \"Ransomware Detection & Protection\",\n                                \"weight\": \"Lighter\",\n                                \"color\": \"Accent\"\n                            },\n                            {\n                                \"type\": \"TextBlock\",\n                                \"weight\": \"Lighter\",\n                                \"text\": \"Ransomware Alert Ignored\",\n                                \"wrap\": True,\n                                \"color\": \"Light\",\n                                \"spacing\": \"Small\"\n                            }\n                        ],\n                        \"width\": \"stretch\"\n                    }\n                ]\n            },\n            {\n                \"type\": \"ColumnSet\",\n                \"columns\": [\n                    {\n                        \"type\": \"Column\",\n                        \"width\": 20,\n                        \"items\": [\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": \"Alert ID:\",\n                                \"color\": \"Light\",\n                                \"spacing\": \"Small\"\n                            }\n                        ]\n                    },\n                    {\n                        \"type\": \"Column\",\n                        \"width\": 80,\n                        \"items\": [\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": args.alert_id,\n                                \"color\": \"Light\",\n                                \"spacing\": \"Small\",\n                                \"id\": \"incident_alert_id\"\n                            }\n                        ]\n                    }\n                ],\n                \"spacing\": \"Padding\",\n                \"horizontalAlignment\": \"Center\"\n            }\n        ]\n    }\n}\nwebex_card = json.dumps(webex_card)",
+                  "script_arguments": [
+                    "$activity.definition_activity_021TMCZXY8ARR171U4xt7u0EVQH4gnySmkV.output.jsonpath_queries.Ransomware Alert ID$"
+                  ],
+                  "script_queries": [
+                    {
+                      "script_query": "message_to_send",
+                      "script_query_name": "Markdown Message",
+                      "script_query_type": "string"
+                    },
+                    {
+                      "script_query": "webex_card",
+                      "script_query_name": "Card",
+                      "script_query_type": "string"
+                    }
+                  ],
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_01WS6ZMC00LBF4q9zYenk1AO00HMMEmeaMp",
+                "name": "Webex Teams - Post Message to Room",
+                "title": "Webex Teams - Post Message to Room",
+                "type": "workflow.atomic_workflow",
+                "base_type": "subworkflow",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Webex Teams - Post Message to Room",
+                  "input": {
+                    "variable_workflow_01PP78DJH1TI76BYfsu9g0Tqj2S6cUxjtu5": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Room ID$",
+                    "variable_workflow_01PP78DJH1XNQ7gNQ5iZdperRHqrppzARXC": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Bot Token$",
+                    "variable_workflow_01PP78DJH1YWL3allalGQbg1VkgKwh9GvCi": "$activity.definition_activity_021TMCFFGDR876RaEbaN8RxU6W8gD6hjD6h.output.script_queries.Markdown Message$",
+                    "variable_workflow_01PP78DJH22BB3Ej3I8tJ4OCQur0unYGjj9": "",
+                    "variable_workflow_01SVERQNMKN8N6vqX2djMtAfshphGydGsH8": "$activity.definition_activity_021TMCFFGDR876RaEbaN8RxU6W8gD6hjD6h.output.script_queries.Card$"
+                  },
+                  "runtime_user": {
+                    "target_default": true
+                  },
+                  "skip_execution": false,
+                  "target": {
+                    "override_workflow_target": true,
+                    "target_id": "definition_target_01N8PCRSVGLBW6EJQouV4nMsJnqbN2VLobU",
+                    "target_type": "web-service.endpoint"
+                  },
+                  "workflow_id": "definition_workflow_01PP78DJMXS415nTjonujf03ROkr6t2PNyw",
+                  "workflow_name": "Webex - Post Message to Room"
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_01WXFKQAX13GA3q2Lbd6v0Ls5XLABEIYzFp",
+            "name": "Condition Branch",
+            "title": "Restore VM",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Action$",
+                "operator": "eq",
+                "right_operand": "restore"
+              },
+              "continue_on_failure": false,
+              "display_name": "Restore VM",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01WXHNYD3BRA8709509HeS4fqSMc4n8IMPs",
+                "name": "Webex Teams - Post Message to Room",
+                "title": "Webex Teams - Post Message to Room",
+                "type": "workflow.atomic_workflow",
+                "base_type": "subworkflow",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Webex Teams - Post Message to Room",
+                  "input": {
+                    "variable_workflow_01PP78DJH1TI76BYfsu9g0Tqj2S6cUxjtu5": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Room ID$",
+                    "variable_workflow_01PP78DJH1XNQ7gNQ5iZdperRHqrppzARXC": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Bot Token$",
+                    "variable_workflow_01PP78DJH1YWL3allalGQbg1VkgKwh9GvCi": "Requested action \"**Restore VM**\" received!",
+                    "variable_workflow_01PP78DJH22BB3Ej3I8tJ4OCQur0unYGjj9": "",
+                    "variable_workflow_01SVERQNMKN8N6vqX2djMtAfshphGydGsH8": ""
+                  },
+                  "runtime_user": {
+                    "target_default": true
+                  },
+                  "skip_execution": false,
+                  "target": {
+                    "override_workflow_target": true,
+                    "target_id": "definition_target_01N8PCRSVGLBW6EJQouV4nMsJnqbN2VLobU",
+                    "target_type": "web-service.endpoint"
+                  },
+                  "workflow_id": "definition_workflow_01PP78DJMXS415nTjonujf03ROkr6t2PNyw",
+                  "workflow_name": "Webex - Post Message to Room"
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_01X0XKNQ5E8DN1Ex9BDcyMllzJNhyW6S3UT",
+            "name": "Condition Branch",
+            "title": "Tear Down VM",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Action$",
+                "operator": "eq",
+                "right_operand": "teardown-cloned-vm"
+              },
+              "continue_on_failure": false,
+              "display_name": "Tear Down VM",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01X1KOHCEV25A5Fog7x0y24i9AGav3cNM7b",
+                "name": "JSONPath Query",
+                "title": "JSONPath Query",
+                "type": "corejava.jsonpathquery",
+                "base_type": "activity",
+                "properties": {
+                  "action_timeout": 180,
+                  "continue_on_failure": false,
+                  "display_name": "JSONPath Query",
+                  "input_json": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Action Args$",
+                  "jsonpath_queries": [
+                    {
+                      "jsonpath_query": "$.vm_id",
+                      "jsonpath_query_name": "VM ID",
+                      "jsonpath_query_type": "string",
+                      "zdate_type_format": "yyyy-MM-dd'T'HH:mm:ssZ"
+                    },
+                    {
+                      "jsonpath_query": "$.vm_name",
+                      "jsonpath_query_name": "VM Name",
+                      "jsonpath_query_type": "string",
+                      "zdate_type_format": "yyyy-MM-dd'T'HH:mm:ssZ"
+                    }
+                  ],
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_01X0XQ3O0FVS32FMSr2PNXPf1QeZ6VRnOnu",
+                "name": "Cohesity - Teardown VM Clone",
+                "title": "Cohesity - Teardown VM Clone",
+                "type": "workflow.sub_workflow",
+                "base_type": "subworkflow",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Cohesity - Teardown VM Clone",
+                  "input": {
+                    "variable_workflow_01X0PTQK2E4LJ29avOn6UMv2SLr1OVaUQs7": "$global.variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46.global.variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46$",
+                    "variable_workflow_01X0XR4N97QJH5fdEWhjFf9hSjaJCkQIQbS": "$activity.definition_activity_01X1KOHCEV25A5Fog7x0y24i9AGav3cNM7b.output.jsonpath_queries.VM ID$"
+                  },
+                  "runtime_user": {
+                    "target_default": true
+                  },
+                  "skip_execution": false,
+                  "target": {
+                    "no_target": true
+                  },
+                  "workflow_id": "definition_workflow_01X0PTQJUUL776ZP86WA2o1sYPVCkMz7cEk",
+                  "workflow_name": "Cohesity - Teardown VM Clone"
+                },
+                "object_type": "definition_activity"
+              },
+              {
+                "unique_name": "definition_activity_021TKBFOLC2MP3J9XhK5ogsR1Ny8BrsobKU",
+                "name": "Condition Block",
+                "title": "Check result",
+                "type": "logic.if_else",
+                "base_type": "activity",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Check result",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity",
+                "blocks": [
+                  {
+                    "unique_name": "definition_activity_021TKBFOLCVFI20KpJSmMzfhw49KBRwBOXg",
+                    "name": "Condition Branch",
+                    "title": "VM destroyed",
+                    "type": "logic.condition_block",
+                    "base_type": "activity",
+                    "properties": {
+                      "condition": {
+                        "left_operand": "$activity.definition_activity_01X0XQ3O0FVS32FMSr2PNXPf1QeZ6VRnOnu.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": true
+                      },
+                      "continue_on_failure": false,
+                      "display_name": "VM destroyed",
+                      "skip_execution": false
+                    },
+                    "object_type": "definition_activity",
+                    "actions": [
+                      {
+                        "unique_name": "definition_activity_021TKBFOLHFDF0mciOa6xh7PDtIaZEdklKp",
+                        "name": "Execute Python Script",
+                        "title": "Compose Bot Response",
+                        "type": "python3.script",
+                        "base_type": "activity",
+                        "properties": {
+                          "action_timeout": 180,
+                          "continue_on_failure": false,
+                          "display_name": "Compose Bot Response",
+                          "script": "import argparse, ast, json\n\nparser = argparse.ArgumentParser()\nparser.add_argument(\"vm_id\")\nparser.add_argument(\"vm_name\")\nargs = parser.parse_args()\n\nmessage_to_send = '**The requested cloned VM has been tore down**'\nwebex_card = {\n    \"contentType\": \"application/vnd.microsoft.card.adaptive\",\n    \"content\": {\n        \"$schema\": \"http://adaptivecards.io/schemas/adaptive-card.json\",\n        \"version\": \"1.2\",\n        \"type\": \"AdaptiveCard\",\n        \"body\": [\n            {\n                \"type\": \"ColumnSet\",\n                \"columns\": [\n                    {\n                        \"type\": \"Column\",\n                        \"items\": [\n                            {\n                                \"type\": \"Image\",\n                                \"style\": \"Person\",\n                                \"url\": \"https://blog.vgeek.it/wp-content/uploads/2018/11/cohesity.png\",\n                                \"size\": \"Medium\",\n                                \"height\": \"50px\"\n                            }\n                        ],\n                        \"width\": \"auto\"\n                    },\n                    {\n                        \"type\": \"Column\",\n                        \"items\": [\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": \"Ransomware Detection & Protection\",\n                                \"weight\": \"Lighter\",\n                                \"color\": \"Accent\"\n                            },\n                            {\n                                \"type\": \"TextBlock\",\n                                \"weight\": \"Lighter\",\n                                \"text\": \"VM tore down\",\n                                \"wrap\": True,\n                                \"color\": \"Light\",\n                                \"spacing\": \"Small\"\n                            }\n                        ],\n                        \"width\": \"stretch\"\n                    }\n                ]\n            },\n            {\n                \"type\": \"ColumnSet\",\n                \"columns\": [\n                    {\n                        \"type\": \"Column\",\n                        \"width\": 35,\n                        \"items\": [\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": \"Tore Down VM id:\",\n                                \"color\": \"Light\"\n                            },\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": \"Tore Down VM Name:\",\n                                \"weight\": \"Lighter\",\n                                \"color\": \"Light\",\n                                \"spacing\": \"Small\"\n                            }\n                        ]\n                    },\n                    {\n                        \"type\": \"Column\",\n                        \"width\": 65,\n                        \"items\": [\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": args.vm_id,\n                                \"color\": \"Light\",\n                                \"id\": \"incident_source\"\n                            },\n                            {\n                                \"type\": \"TextBlock\",\n                                \"text\": args.vm_name,\n                                \"color\": \"Light\",\n                                \"weight\": \"Lighter\",\n                                \"spacing\": \"Small\",\n                                \"id\": \"incident_cluster\"\n                            }\n                        ]\n                    }\n                ],\n                \"spacing\": \"Padding\",\n                \"horizontalAlignment\": \"Center\"\n            }\n        ]\n    }\n}\nwebex_card = json.dumps(webex_card)",
+                          "script_arguments": [
+                            "$activity.definition_activity_01X1KOHCEV25A5Fog7x0y24i9AGav3cNM7b.output.jsonpath_queries.VM ID$",
+                            "$activity.definition_activity_01X1KOHCEV25A5Fog7x0y24i9AGav3cNM7b.output.jsonpath_queries.VM Name$"
+                          ],
+                          "script_queries": [
+                            {
+                              "script_query": "message_to_send",
+                              "script_query_name": "Markdown Message",
+                              "script_query_type": "string"
+                            },
+                            {
+                              "script_query": "webex_card",
+                              "script_query_name": "Card",
+                              "script_query_type": "string"
+                            }
+                          ],
+                          "skip_execution": false
+                        },
+                        "object_type": "definition_activity"
+                      },
+                      {
+                        "unique_name": "definition_activity_021TKBFOLKKC67gr6O5hsiUt93eD8gkyAwI",
+                        "name": "Webex Teams - Post Message to Room",
+                        "title": "Webex Teams - Post Message to Room",
+                        "type": "workflow.atomic_workflow",
+                        "base_type": "subworkflow",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "display_name": "Webex Teams - Post Message to Room",
+                          "input": {
+                            "variable_workflow_01PP78DJH1TI76BYfsu9g0Tqj2S6cUxjtu5": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Room ID$",
+                            "variable_workflow_01PP78DJH1XNQ7gNQ5iZdperRHqrppzARXC": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Bot Token$",
+                            "variable_workflow_01PP78DJH1YWL3allalGQbg1VkgKwh9GvCi": "$activity.definition_activity_021TKBFOLHFDF0mciOa6xh7PDtIaZEdklKp.output.script_queries.Markdown Message$",
+                            "variable_workflow_01PP78DJH22BB3Ej3I8tJ4OCQur0unYGjj9": "",
+                            "variable_workflow_01SVERQNMKN8N6vqX2djMtAfshphGydGsH8": "$activity.definition_activity_021TKBFOLHFDF0mciOa6xh7PDtIaZEdklKp.output.script_queries.Card$"
+                          },
+                          "runtime_user": {
+                            "target_default": true
+                          },
+                          "skip_execution": false,
+                          "target": {
+                            "override_workflow_target": true,
+                            "target_id": "definition_target_01N8PCRSVGLBW6EJQouV4nMsJnqbN2VLobU",
+                            "target_type": "web-service.endpoint"
+                          },
+                          "workflow_id": "definition_workflow_01PP78DJMXS415nTjonujf03ROkr6t2PNyw",
+                          "workflow_name": "Webex - Post Message to Room"
+                        },
+                        "object_type": "definition_activity"
+                      }
+                    ]
+                  },
+                  {
+                    "unique_name": "definition_activity_021TKBFOLM3NE55UBVkNWHJrHHhoKpAMmFw",
+                    "name": "Condition Branch",
+                    "title": "Error",
+                    "type": "logic.condition_block",
+                    "base_type": "activity",
+                    "properties": {
+                      "condition": {
+                        "left_operand": "$activity.definition_activity_01X0XQ3O0FVS32FMSr2PNXPf1QeZ6VRnOnu.output.succeeded$",
+                        "operator": "eq",
+                        "right_operand": false
+                      },
+                      "continue_on_failure": false,
+                      "display_name": "Error",
+                      "skip_execution": false
+                    },
+                    "object_type": "definition_activity",
+                    "actions": [
+                      {
+                        "unique_name": "definition_activity_021TKBFOLNJNP4cn6D4ym6KjZCtHWrvu8FC",
+                        "name": "Webex Teams - Post Message to Room",
+                        "title": "Webex Teams - Post Message to Room",
+                        "type": "workflow.atomic_workflow",
+                        "base_type": "subworkflow",
+                        "properties": {
+                          "continue_on_failure": false,
+                          "display_name": "Webex Teams - Post Message to Room",
+                          "input": {
+                            "variable_workflow_01PP78DJH1TI76BYfsu9g0Tqj2S6cUxjtu5": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Room ID$",
+                            "variable_workflow_01PP78DJH1XNQ7gNQ5iZdperRHqrppzARXC": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Bot Token$",
+                            "variable_workflow_01PP78DJH1YWL3allalGQbg1VkgKwh9GvCi": "**No alerts found**",
+                            "variable_workflow_01PP78DJH22BB3Ej3I8tJ4OCQur0unYGjj9": "",
+                            "variable_workflow_01SVERQNMKN8N6vqX2djMtAfshphGydGsH8": ""
+                          },
+                          "runtime_user": {
+                            "target_default": true
+                          },
+                          "skip_execution": false,
+                          "target": {
+                            "override_workflow_target": true,
+                            "target_id": "definition_target_01N8PCRSVGLBW6EJQouV4nMsJnqbN2VLobU",
+                            "target_type": "web-service.endpoint"
+                          },
+                          "workflow_id": "definition_workflow_01PP78DJMXS415nTjonujf03ROkr6t2PNyw",
+                          "workflow_name": "Webex - Post Message to Room"
+                        },
+                        "object_type": "definition_activity"
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "unique_name": "definition_activity_01X0XKNQ5ETW912dwp9Kr2DxToRxI3Hrz1P",
+                "name": "Webex Teams - Post Message to Room",
+                "title": "Webex Teams - Post Message to Room",
+                "type": "workflow.atomic_workflow",
+                "base_type": "subworkflow",
+                "properties": {
+                  "continue_on_failure": false,
+                  "display_name": "Webex Teams - Post Message to Room",
+                  "input": {
+                    "variable_workflow_01PP78DJH1TI76BYfsu9g0Tqj2S6cUxjtu5": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Room ID$",
+                    "variable_workflow_01PP78DJH1XNQ7gNQ5iZdperRHqrppzARXC": "$activity.definition_activity_01WSASEEWBOSW0r5qwtZADzo68KGS9yTMVZ.output.jsonpath_queries.Bot Token$",
+                    "variable_workflow_01PP78DJH1YWL3allalGQbg1VkgKwh9GvCi": "Requested action \"**Restore VM**\" received!",
+                    "variable_workflow_01PP78DJH22BB3Ej3I8tJ4OCQur0unYGjj9": "",
+                    "variable_workflow_01SVERQNMKN8N6vqX2djMtAfshphGydGsH8": ""
+                  },
+                  "runtime_user": {
+                    "target_default": true
+                  },
+                  "skip_execution": false,
+                  "target": {
+                    "override_workflow_target": true,
+                    "target_id": "definition_target_01N8PCRSVGLBW6EJQouV4nMsJnqbN2VLobU",
+                    "target_type": "web-service.endpoint"
+                  },
+                  "workflow_id": "definition_workflow_01PP78DJMXS415nTjonujf03ROkr6t2PNyw",
+                  "workflow_name": "Webex - Post Message to Room"
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "categories": [
+      "category_1BMfMXSnJMyt5Ihqi7rWJr5N8cf"
+    ]
+  },
+  "triggers": {
+    "triggerevent_01WU1BTNDMT6D6QPECeQE1lEYjHPYFaFyI2": {
+      "workflow_id": "definition_workflow_01WS6ZH220MI46s4NnX6cpKdt7DkL29g3Gj",
+      "name": "Cohesity Bot Card Action Trigger",
+      "title": "",
+      "lowercase_name": "event.cohesity_bot_card_action_trigger",
+      "type": "event",
+      "base_type": "trigger",
+      "ref_id": "event_webhook_01WU1BF9TP8R67HmyO5vdVv2qNSfle6rHPt",
+      "version": "1.0.0",
+      "disabled": false,
+      "unique_name": "triggerevent_01WU1BTNDMT6D6QPECeQE1lEYjHPYFaFyI2",
+      "object_type": "triggerevent"
+    },
+    "triggerevent_01WZ71JF2I1ZA0aECcJgRxL6YddQDXwlldb": {
+      "workflow_id": "definition_workflow_01WS6ZH220MI46s4NnX6cpKdt7DkL29g3Gj",
+      "name": "Message Sent to Bot",
+      "title": "",
+      "lowercase_name": "event.message_sent_to_bot",
+      "type": "event",
+      "base_type": "trigger",
+      "ref_id": "event_webhook_01WS70Y0FPAY53arRP67cPh2N6aPd3YAVwa",
+      "version": "1.0.0",
+      "disabled": false,
+      "unique_name": "triggerevent_01WZ71JF2I1ZA0aECcJgRxL6YddQDXwlldb",
+      "object_type": "triggerevent"
+    }
+  },
+  "events": {
+    "event_webhook_01WS70Y0FPAY53arRP67cPh2N6aPd3YAVwa": {
+      "name": "Cohesity Bot Message Event",
+      "title": "Cohesity Bot Message Event",
+      "type": "webhook.event",
+      "base_type": "event",
+      "object_type": "event_webhook",
+      "target_id": "",
+      "webhook_id": "webhook_01WPVRP9NGSUH4Ao5Iyba53CH4NQGNc5RkT",
+      "version": "1.0.0",
+      "properties": {
+        "display_name": "Cohesity Bot Event",
+        "title": "Cohesity Bot Message Event",
+        "webhook_id": "webhook_01WPVRP9NGSUH4Ao5Iyba53CH4NQGNc5RkT"
+      },
+      "unique_name": "event_webhook_01WS70Y0FPAY53arRP67cPh2N6aPd3YAVwa"
+    },
+    "event_webhook_01WU1BF9TP8R67HmyO5vdVv2qNSfle6rHPt": {
+      "name": "Cohesity Bot Card Action Event",
+      "title": "Cohesity Bot Card Action Event",
+      "type": "webhook.event",
+      "base_type": "event",
+      "object_type": "event_webhook",
+      "target_id": "",
+      "webhook_id": "webhook_01WU139KOBD0L2H3CG6l7l8J0Sj96buyVtA",
+      "version": "1.0.0",
+      "properties": {
+        "title": "Cohesity Bot Card Action Event",
+        "webhook_id": "webhook_01WU139KOBD0L2H3CG6l7l8J0Sj96buyVtA"
+      },
+      "unique_name": "event_webhook_01WU1BF9TP8R67HmyO5vdVv2qNSfle6rHPt"
+    }
+  },
+  "targets": {
+    "definition_target_01N8PCRSVGLBW6EJQouV4nMsJnqbN2VLobU": {
+      "unique_name": "definition_target_01N8PCRSVGLBW6EJQouV4nMsJnqbN2VLobU",
+      "name": "Webex Teams",
+      "title": "Webex Teams",
+      "type": "web-service.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "description": "Webex Teams",
+        "disable_certificate_validation": false,
+        "display_name": "Webex Teams",
+        "host": "webexapis.com",
+        "no_runtime_user": true,
+        "port": 443,
+        "protocol": "https"
+      }
+    }
+  },
+  "variables": {
+    "variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46": {
+      "unique_name": "variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46",
+      "properties": {
+        "value": "*****",
+        "scope": "global",
+        "name": "Cohesity Helios API",
+        "type": "datatype.secure_string",
+        "is_required": false,
+        "is_invisible": false
+      },
+      "object_type": "variable"
+    }
+  },
+  "atomic_workflows": [
+    "definition_workflow_01PP78DJMXS415nTjonujf03ROkr6t2PNyw"
+  ],
+  "webhooks": {
+    "webhook_01WPVRP9NGSUH4Ao5Iyba53CH4NQGNc5RkT": {
+      "name": "Coheisty Bot Message Webhook",
+      "title": "Coheisty Bot Message Webhook",
+      "type": "generic.webhook",
+      "base_type": "webhook",
+      "object_type": "webhook",
+      "version": "1.0.0",
+      "properties": {
+        "display_name": "Coheisty Bot Message Webhook",
+        "request_content_type": "application/json"
+      },
+      "unique_name": "webhook_01WPVRP9NGSUH4Ao5Iyba53CH4NQGNc5RkT"
+    },
+    "webhook_01WU139KOBD0L2H3CG6l7l8J0Sj96buyVtA": {
+      "name": "Cohesity Bot Card Action",
+      "title": "Cohesity Bot Card Action",
+      "type": "generic.webhook",
+      "base_type": "webhook",
+      "object_type": "webhook",
+      "version": "1.0.0",
+      "properties": {
+        "display_name": "Cohesity Bot Card Action",
+        "request_content_type": "application/json"
+      },
+      "unique_name": "webhook_01WU139KOBD0L2H3CG6l7l8J0Sj96buyVtA"
+    }
+  },
+  "dependent_workflows": [
+    "definition_workflow_01WNHW87PP5ZK7S7PHik8I1zKxEXMzZElkP",
+    "definition_workflow_01PP78DJMXS415nTjonujf03ROkr6t2PNyw",
+    "definition_workflow_01WT5DR8S3LKE0cgIEyK8GzpU56qkZfCD1K",
+    "definition_workflow_01X0PTQJUUL776ZP86WA2o1sYPVCkMz7cEk"
+  ]
+}

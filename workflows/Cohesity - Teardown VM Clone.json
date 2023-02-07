@@ -1,0 +1,234 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_01X0PTQJUUL776ZP86WA2o1sYPVCkMz7cEk",
+    "name": "Cohesity - Teardown VM Clone",
+    "title": "Cohesity - Teardown VM Clone",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.secure_string",
+        "properties": {
+          "value": "*****",
+          "scope": "input",
+          "name": "Helios API Key",
+          "type": "datatype.secure_string",
+          "description": "Your Cohesity Helios API key",
+          "is_required": true,
+          "is_invisible": false
+        },
+        "unique_name": "variable_workflow_01X0PTQK2E4LJ29avOn6UMv2SLr1OVaUQs7",
+        "object_type": "variable_workflow"
+      },
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "VM ID",
+          "type": "datatype.string",
+          "is_required": true,
+          "is_invisible": false
+        },
+        "unique_name": "variable_workflow_01X0XR4N97QJH5fdEWhjFf9hSjaJCkQIQbS",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "is_atomic": false
+      },
+      "delete_workflow_instance": false,
+      "display_name": "Cohesity - Teardown VM Clone",
+      "runtime_user": {
+        "override_target_runtime_user": false,
+        "specify_on_workflow_start": false,
+        "target_default": true
+      },
+      "target": {
+        "no_target": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_01X0PTQPU126Q5bYvqCfggm0VOLy0L98vOP",
+        "name": "HTTP Request",
+        "title": "Teardown VM Clone",
+        "type": "web-service.http_request",
+        "base_type": "activity",
+        "properties": {
+          "accept": "application/json",
+          "action_timeout": 180,
+          "allow_auto_redirect": true,
+          "allow_headers_redirect": false,
+          "content_type": "application/json",
+          "continue_on_error_status_code": false,
+          "continue_on_failure": false,
+          "custom_headers": [
+            {
+              "name": "apiKey",
+              "value": "$global.variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46.global.variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46$"
+            },
+            {
+              "name": "clusterid",
+              "value": "000000000000"
+            }
+          ],
+          "display_name": "Teardown VM Clone",
+          "method": "POST",
+          "relative_url": "/destroyclone/$workflow.definition_workflow_01X0PTQJUUL776ZP86WA2o1sYPVCkMz7cEk.input.variable_workflow_01X0XR4N97QJH5fdEWhjFf9hSjaJCkQIQbS$",
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "override_workflow_target": true,
+            "target_id": "definition_target_01WYB9IRRCLQN4JyMpbziAgh6JrCWnPjv53"
+          }
+        },
+        "object_type": "definition_activity"
+      },
+      {
+        "unique_name": "definition_activity_01X0PTQQKWFT91sb35YNer9olKq15AcUJjV",
+        "name": "Condition Block",
+        "title": "Check Response",
+        "type": "logic.if_else",
+        "base_type": "activity",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Check Response",
+          "skip_execution": false
+        },
+        "object_type": "definition_activity",
+        "blocks": [
+          {
+            "unique_name": "definition_activity_01X0PTQR7DJ3F0BYYACfJdLO7Uvk29JoSgr",
+            "name": "Condition Branch",
+            "title": "200/destroyed",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_01X0PTQPU126Q5bYvqCfggm0VOLy0L98vOP.output.status_code$",
+                "operator": "eq",
+                "right_operand": 200
+              },
+              "continue_on_failure": false,
+              "display_name": "200/destroyed",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01X0PTQTJQ4CA6GCOQ1GkhLT62r85BACdyz",
+                "name": "Completed",
+                "title": "Completed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "succeeded",
+                  "continue_on_failure": false,
+                  "display_name": "Completed",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          },
+          {
+            "unique_name": "definition_activity_01X0PTQU1ZI8A1fOykO2j6YE6yQHX4AkNGs",
+            "name": "Condition Branch",
+            "title": "Anything else",
+            "type": "logic.condition_block",
+            "base_type": "activity",
+            "properties": {
+              "condition": {
+                "left_operand": "$activity.definition_activity_01X0PTQPU126Q5bYvqCfggm0VOLy0L98vOP.output.status_code$",
+                "operator": "ne",
+                "right_operand": 200
+              },
+              "continue_on_failure": false,
+              "display_name": "Anything else",
+              "skip_execution": false
+            },
+            "object_type": "definition_activity",
+            "actions": [
+              {
+                "unique_name": "definition_activity_01X0PTQUOD0IU59OrN66SA7jWwlj9kSSqoH",
+                "name": "Completed",
+                "title": "Failed",
+                "type": "logic.completed",
+                "base_type": "activity",
+                "properties": {
+                  "completion_type": "failed-completed",
+                  "continue_on_failure": false,
+                  "display_name": "Failed",
+                  "skip_execution": false
+                },
+                "object_type": "definition_activity"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "categories": [
+      "category_01EI33LMFFL7N5eTQLsOOJIrxdlSOHb7r3r",
+      "category_01FM7CGPZZCMY0KcvgiGjVH5UaB4y4aDJ7m"
+    ]
+  },
+  "categories": {
+    "category_01EI33LMFFL7N5eTQLsOOJIrxdlSOHb7r3r": {
+      "unique_name": "category_01EI33LMFFL7N5eTQLsOOJIrxdlSOHb7r3r",
+      "name": "SecureX",
+      "title": "SecureX",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    },
+    "category_01FM7CGPZZCMY0KcvgiGjVH5UaB4y4aDJ7m": {
+      "unique_name": "category_01FM7CGPZZCMY0KcvgiGjVH5UaB4y4aDJ7m",
+      "name": "response",
+      "title": "response",
+      "type": "basic.category",
+      "base_type": "category",
+      "category_type": "custom",
+      "object_type": "category"
+    }
+  },
+  "targets": {
+    "definition_target_01WYB9IRRCLQN4JyMpbziAgh6JrCWnPjv53": {
+      "unique_name": "definition_target_01WYB9IRRCLQN4JyMpbziAgh6JrCWnPjv53",
+      "name": "Cohesity - IrisServices API v1",
+      "title": "Cohesity - IrisServices API v1",
+      "type": "web-service.endpoint",
+      "base_type": "target",
+      "object_type": "definition_target",
+      "properties": {
+        "disable_certificate_validation": false,
+        "display_name": "Cohesity - IrisServices API v1",
+        "host": "helios.cohesity.com",
+        "ignore_proxy": false,
+        "no_runtime_user": true,
+        "path": "/irisservices/api/v1",
+        "protocol": "https"
+      }
+    }
+  },
+  "variables": {
+    "variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46": {
+      "unique_name": "variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46",
+      "properties": {
+        "value": "*****",
+        "scope": "global",
+        "name": "Cohesity Helios API",
+        "type": "datatype.secure_string",
+        "is_required": false,
+        "is_invisible": false
+      },
+      "object_type": "variable"
+    }
+  }
+}

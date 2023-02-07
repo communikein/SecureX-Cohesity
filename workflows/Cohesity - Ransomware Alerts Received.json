@@ -1,0 +1,135 @@
+{
+  "workflow": {
+    "unique_name": "definition_workflow_01WTE0RA4I9XB2n349J31iTY7rvTq6oNMjw",
+    "name": "Cohesity - Ransomware Alerts Received",
+    "title": "Cohesity - Ransomware Alerts Received",
+    "type": "generic.workflow",
+    "base_type": "workflow",
+    "variables": [
+      {
+        "schema_id": "datatype.string",
+        "properties": {
+          "value": "",
+          "scope": "input",
+          "name": "Webex Room ID",
+          "type": "datatype.string",
+          "is_required": true,
+          "is_invisible": false
+        },
+        "unique_name": "variable_workflow_01WTE219SRB7234MwBpzGpvD95BHt7rMLk4",
+        "object_type": "variable_workflow"
+      }
+    ],
+    "properties": {
+      "atomic": {
+        "is_atomic": false
+      },
+      "delete_workflow_instance": false,
+      "display_name": "Cohesity - Ransomware Alerts Received",
+      "runtime_user": {
+        "target_default": true
+      },
+      "target": {
+        "no_target": true
+      }
+    },
+    "object_type": "definition_workflow",
+    "actions": [
+      {
+        "unique_name": "definition_activity_01WTE63DBGOIP1GTdDYzTkWzREnj7csKZVV",
+        "name": "Cohesity - Push Ransomware Alerts to SecureX",
+        "title": "Cohesity - Push Ransomware Alerts to SecureX",
+        "type": "workflow.sub_workflow",
+        "base_type": "subworkflow",
+        "properties": {
+          "continue_on_failure": false,
+          "display_name": "Cohesity - Push Ransomware Alerts to SecureX",
+          "input": {
+            "variable_workflow_01WNHW87XBN0J2R9xyz23OW70ABHxGZQIuQ": "200",
+            "variable_workflow_01WNW3TRU3JGL2t3TTK4cW1gVzYS89HSOdu": "$workflow.definition_workflow_01WTE0RA4I9XB2n349J31iTY7rvTq6oNMjw.input.variable_workflow_01WTE219SRB7234MwBpzGpvD95BHt7rMLk4$",
+            "variable_workflow_01WTDSORO8B4Q1YG5bY2SGXunpJwn4aUFR2": "$global.variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46.global.variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46$",
+            "variable_workflow_01WTE2UZEEMK432AqXOaUhop2kw5kReocib": "$global.variable_01WTE4XW5JKA02LsgWGkkoVTvq0md5lNqZY.global.variable_01WTE4XW5JKA02LsgWGkkoVTvq0md5lNqZY$"
+          },
+          "runtime_user": {
+            "target_default": true
+          },
+          "skip_execution": false,
+          "target": {
+            "no_target": true
+          },
+          "workflow_id": "definition_workflow_01WNHW87PP5ZK7S7PHik8I1zKxEXMzZElkP",
+          "workflow_name": "Cohesity - Push Ransomware Alerts to SecureX"
+        },
+        "object_type": "definition_activity"
+      }
+    ],
+    "categories": [
+      "category_1BMfMXSnJMyt5Ihqi7rWJr5N8cf"
+    ]
+  },
+  "triggers": {
+    "triggerschedule_01WTE12ENTMFB1JmruOs0vhSM9gsujcQkpm": {
+      "workflow_id": "definition_workflow_01WTE0RA4I9XB2n349J31iTY7rvTq6oNMjw",
+      "name": "Helios Ransowmare Data Push",
+      "title": "",
+      "lowercase_name": "schedule.helios_ransowmare_data_push",
+      "type": "schedule",
+      "base_type": "trigger",
+      "ref_id": "schedule_01OD0U5F998SU05n5KmkBk6cfVG8udoEcnw",
+      "version": "1.0.0",
+      "disabled": false,
+      "unique_name": "triggerschedule_01WTE12ENTMFB1JmruOs0vhSM9gsujcQkpm",
+      "object_type": "triggerschedule"
+    }
+  },
+  "schedules": {
+    "schedule_01OD0U5F998SU05n5KmkBk6cfVG8udoEcnw": {
+      "unique_name": "schedule_01OD0U5F998SU05n5KmkBk6cfVG8udoEcnw",
+      "name": "Cohesity Helios Ransomware Data Push Schedule",
+      "description": "Schedule to trigger orchestration workflow to push Helios ransomware data to private intelligence",
+      "type": "basic.schedule",
+      "base_type": "schedule",
+      "properties": {
+        "calendar": "calendar_recurring_1BMfMWvgiDhSjBQ7hTSyvz3NyVZ",
+        "timezone": "Etc/GMT+0",
+        "starttime": "00:00",
+        "interval_hours": 1,
+        "interval_minutes": 0,
+        "number_of_times": 24,
+        "display_name": "Cohesity Helios Ransomware Data Push Schedule",
+        "description": "Schedule to trigger orchestration workflow to push Helios ransomware data to private intelligence"
+      },
+      "version": "1.0.0",
+      "object_type": "schedule"
+    }
+  },
+  "variables": {
+    "variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46": {
+      "unique_name": "variable_01VOH762YFXLD3Jx9JwcSkLmjV6TsMICf46",
+      "properties": {
+        "value": "*****",
+        "scope": "global",
+        "name": "Cohesity Helios API",
+        "type": "datatype.secure_string",
+        "is_required": false,
+        "is_invisible": false
+      },
+      "object_type": "variable"
+    },
+    "variable_01WTE4XW5JKA02LsgWGkkoVTvq0md5lNqZY": {
+      "unique_name": "variable_01WTE4XW5JKA02LsgWGkkoVTvq0md5lNqZY",
+      "properties": {
+        "value": "*****",
+        "scope": "global",
+        "name": "Webex Bot Token - Cohesity",
+        "type": "datatype.secure_string",
+        "is_required": false,
+        "is_invisible": false
+      },
+      "object_type": "variable"
+    }
+  },
+  "dependent_workflows": [
+    "definition_workflow_01WNHW87PP5ZK7S7PHik8I1zKxEXMzZElkP"
+  ]
+}
